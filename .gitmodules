@@ -1,0 +1,4 @@
+[submodule "vendor/libsimd"]
+	path = vendor/libsimd
+	url = git@github.com:holepunchto/libsimd.git
+	shallow = true
