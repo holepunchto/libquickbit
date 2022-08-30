@@ -39,13 +39,16 @@ field_index_init (field_index_t index, const field_t field, size_t field_len, bo
     uint64_t total = 0;
 
     for (size_t j = 0; j < 128; j++) {
-      simd_v128_t v = simd_load_v128_u8(&field[(i * 128 + j) * 16]);
+      size_t offset = (i * 128 + j) * 16;
+      uint64_t count = 0;
 
-      uint64_t c = simd_sum_v128_u8(simd_cnt_v128_u8(v));
+      if (offset + 16 <= field_len) {
+        count = simd_sum_v128_u8(simd_cnt_v128_u8(simd_load_v128_u8(&field[offset])));
+      }
 
-      field_set(index, i * 128 + j + 128, c == (value ? 128 : 0));
+      field_set(index, i * 128 + j + 128, count == (value ? 128 : 0));
 
-      total += c;
+      total += count;
     }
 
     field_set(index, i, total == (value ? 16384 : 0));
