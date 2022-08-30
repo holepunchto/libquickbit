@@ -45,7 +45,7 @@ field_index_init (field_index_t index, const field_t field, size_t field_len, bo
 
       field_set(index, i * 128 + j + 128, c == (value ? 128 : 0));
 
-      c += total;
+      total += c;
     }
 
     field_set(index, i, total == (value ? 16384 : 0));
