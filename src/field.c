@@ -34,7 +34,7 @@ field_set (field_t field, size_t bit, bool value) {
 }
 
 void
-field_index_init (field_index_t index, bool set, const field_t field, size_t field_len) {
+field_index_init (field_index_t index, const field_t field, size_t field_len, bool value) {
   for (size_t i = 0; i < 128; i++) {
     uint64_t total = 0;
 
@@ -43,11 +43,11 @@ field_index_init (field_index_t index, bool set, const field_t field, size_t fie
 
       uint64_t c = simd_sum_v128_u8(simd_cnt_v128_u8(v));
 
-      field_set(index, i * 128 + j + 128, c == (set ? 128 : 0));
+      field_set(index, i * 128 + j + 128, c == (value ? 128 : 0));
 
       c += total;
     }
 
-    field_set(index, i, total == (set ? 16384 : 0));
+    field_set(index, i, total == (value ? 16384 : 0));
   }
 }

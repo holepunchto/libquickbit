@@ -8,7 +8,7 @@ main () {
   uint8_t *field = calloc(1 << 18, sizeof(uint8_t));
 
   field_index_t index;
-  field_index_init(index, 1, field, 1 << 18);
+  field_index_init(index, field, 1 << 18, 1);
 
   return 0;
 }

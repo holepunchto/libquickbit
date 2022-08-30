@@ -21,7 +21,7 @@ bool
 field_set (field_t field, size_t bit, bool value);
 
 void
-field_index_init (field_index_t index, bool set, const field_t field, size_t field_len);
+field_index_init (field_index_t index, const field_t field, size_t field_len, bool value);
 
 #ifdef __cplusplus
 }
