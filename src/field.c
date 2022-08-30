@@ -46,14 +46,19 @@ field_index_of (const field_t field, size_t field_len, bool value, size_t positi
       i++;
     }
 
+    size_t k = i * 16384;
     size_t j = 0;
+
+    if (position > k) j = (position - k) / 128;
 
     // TODO: SIMD'ify
     while (j < 128 && field_get(index, i * 128 + j + 128)) {
       j++;
     }
 
-    position = i * 128 * 128 + j * 128;
+    size_t l = k + j * 128;
+
+    if (l > position) position = l;
   }
 
   size_t i = position;
