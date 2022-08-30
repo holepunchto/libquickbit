@@ -36,11 +36,11 @@ field_set (field_t field, size_t bit, bool value) {
 void
 field_index_init (field_index_t index, const field_t field, size_t field_len, bool value) {
   for (size_t i = 0; i < 128; i++) {
-    uint64_t total = 0;
+    int16_t total = 0;
 
     for (size_t j = 0; j < 128; j++) {
       size_t offset = (i * 128 + j) * 16;
-      uint64_t count = 0;
+      int16_t count = -1;
 
       if (offset + 16 <= field_len) {
         count = simd_sum_v128_u8(simd_cnt_v128_u8(simd_load_v128_u8(&field[offset])));
