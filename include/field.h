@@ -8,6 +8,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <sys/types.h>
 
 #define FIELD_INDEX_LEN 2064
 
@@ -19,6 +20,12 @@ field_get (const field_t field, size_t bit);
 
 bool
 field_set (field_t field, size_t bit, bool value);
+
+ssize_t
+field_index_of (const field_t field, size_t field_len, bool value, size_t position, field_index_t index);
+
+ssize_t
+field_last_index_of (const field_t field, size_t field_len, bool value, size_t position, field_index_t index);
 
 void
 field_index_init (field_index_t index, const field_t field, size_t field_len, bool value);

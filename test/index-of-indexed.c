@@ -1,14 +1,15 @@
 #include <assert.h>
-#include <stdlib.h>
 
 #include "../include/field.h"
 
 int
 main () {
-  uint8_t *field = calloc(1 << 18, sizeof(uint8_t));
+  uint8_t field[1 << 18] = {0};
+
+  field_set(field, 1000000, 1);
 
   field_index_t index;
   field_index_init(index, field, 1 << 18, 0);
 
-  return 0;
+  assert(field_index_of(field, 1 << 18, 1, 0, index) == 1000000);
 }

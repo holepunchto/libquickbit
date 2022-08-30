@@ -1,6 +1,7 @@
 #include <simd.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "../include/field.h"
 
@@ -31,6 +32,50 @@ field_set (field_t field, size_t bit, bool value) {
   field[i] ^= mask;
 
   return true;
+}
+
+ssize_t
+field_index_of (const field_t field, size_t field_len, bool value, size_t position, field_index_t index) {
+  size_t n = field_len * 8;
+
+  if (index != NULL) {
+    size_t i = position / 16384;
+
+    // TODO: SIMD'ify
+    while (i < 128 && field_get(index, i)) {
+      i++;
+    }
+
+    size_t j = 0;
+
+    // TODO: SIMD'ify
+    while (j < 128 && field_get(index, i * 128 + j + 128)) {
+      j++;
+    }
+
+    position = i * 128 * 128 + j * 128;
+  }
+
+  size_t i = position;
+
+  while (i < n && field_get(field, i) != value) {
+    i++;
+  }
+
+  return i < n ? i : -1;
+}
+
+ssize_t
+field_last_index_of (const field_t field, size_t field_len, bool value, size_t position, field_index_t index) {
+  size_t n = field_len * 8;
+
+  size_t i = position;
+
+  while (i >= 0 && field_get(field, i) != value) {
+    i--;
+  }
+
+  return i < n ? i : -1;
 }
 
 void
