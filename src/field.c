@@ -8,7 +8,7 @@
 bool
 field_get (const field_t field, size_t bit) {
   size_t offset = bit & 7;
-  size_t i = (bit - offset) / 8;
+  size_t i = bit / 8;
 
   return (field[i] & (1 << offset)) != 0;
 }
@@ -16,7 +16,7 @@ field_get (const field_t field, size_t bit) {
 bool
 field_set (field_t field, size_t bit, bool value) {
   size_t offset = bit & 7;
-  size_t i = (bit - offset) / 8;
+  size_t i = bit / 8;
   size_t mask = 1 << offset;
 
   if (value) {
