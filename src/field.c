@@ -1,7 +1,6 @@
 #include <simd.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
 
 #include "../include/field.h"
 
