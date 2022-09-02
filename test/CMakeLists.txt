@@ -2,6 +2,7 @@ list(APPEND tests
   get
   index-of
   index-of-indexed
+  index-update
   set
 )
 

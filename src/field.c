@@ -107,7 +107,7 @@ field_index_init (field_index_t index, const field_t field, size_t field_len) {
         sum = simd_sum_v128_u8(simd_load_v128_u8(&field[offset]));
       }
 
-      field_set(index, i * 128 + j + 128, sum == 0 || sum == 0xff * 16);
+      field_set(index, i * 128 + 128 + j, sum == 0 || sum == 0xff * 16);
 
       all_z = all_z && sum == 0;
       all_o = all_o && sum == 0xff * 16;
@@ -115,4 +115,22 @@ field_index_init (field_index_t index, const field_t field, size_t field_len) {
 
     field_set(index, i, all_z || all_o);
   }
+}
+
+bool
+field_index_update (field_index_t index, const field_t field, size_t bit) {
+  size_t i = bit / 16384;
+  size_t j = bit / 128;
+
+  uint16_t sum = simd_sum_v128_u8(simd_load_v128_u8(&field[j * 16]));
+
+  if (field_set(index, 128 + j, sum == 0 || sum == 0xff * 16)) {
+    sum = simd_sum_v128_u8(simd_load_v128_u8(&index[i * 16 + 16]));
+
+    field_set(index, i, sum == 0 || sum == 0xff * 16);
+
+    return true;
+  }
+
+  return false;
 }

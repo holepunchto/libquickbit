@@ -30,6 +30,9 @@ field_last_index_of (const field_t field, size_t field_len, bool value, size_t p
 void
 field_index_init (field_index_t index, const field_t field, size_t field_len);
 
+bool
+field_index_update (field_index_t index, const field_t field, size_t bit);
+
 #ifdef __cplusplus
 }
 #endif
