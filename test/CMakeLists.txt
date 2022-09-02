@@ -1,6 +1,8 @@
 list(APPEND tests
+  get
   index-of
   index-of-indexed
+  set
 )
 
 foreach(test IN LISTS tests)

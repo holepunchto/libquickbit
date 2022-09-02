@@ -8,7 +8,17 @@ main () {
 
   field_set(field, 1000000, 1);
 
-  assert(field_index_of(field, 1 << 18, 1, 0, NULL) == 1000000);
-  assert(field_index_of(field, 1 << 18, 1, 1000000, NULL) == 1000000);
-  assert(field_index_of(field, 1 << 18, 1, 1000001, NULL) == -1);
+  size_t i;
+
+  i = field_index_of(field, 1 << 18, 1, 0, NULL);
+  assert(i == 1000000);
+
+  i = field_index_of(field, 1 << 18, 1, 1000000, NULL);
+  assert(i == 1000000);
+
+  i = field_index_of(field, 1 << 18, 1, 1000001, NULL);
+  assert(i == -1);
+
+  i = field_index_of(field, 125000, 1, 0, NULL);
+  assert(i == -1);
 }

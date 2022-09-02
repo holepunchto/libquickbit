@@ -10,9 +10,9 @@ extern "C" {
 #include <stdint.h>
 #include <sys/types.h>
 
-#define FIELD_INDEX_LEN 2064
+#define FIELD_INDEX_LEN 16 + 128 * 16
 
-typedef uint8_t field_t[];
+typedef uint8_t *field_t;
 typedef uint8_t field_index_t[FIELD_INDEX_LEN];
 
 bool
@@ -28,7 +28,7 @@ ssize_t
 field_last_index_of (const field_t field, size_t field_len, bool value, size_t position, field_index_t index);
 
 void
-field_index_init (field_index_t index, const field_t field, size_t field_len, bool value);
+field_index_init (field_index_t index, const field_t field, size_t field_len);
 
 #ifdef __cplusplus
 }

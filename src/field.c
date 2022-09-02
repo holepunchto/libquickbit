@@ -38,11 +38,16 @@ ssize_t
 field_index_of (const field_t field, size_t field_len, bool value, size_t position, field_index_t index) {
   size_t n = field_len * 8;
 
+  if (n == 0) return -1;
+
   if (index != NULL) {
     size_t i = position / 16384;
 
-    // TODO: SIMD'ify
     while (i < 128 && field_get(index, i)) {
+      size_t bit = i * 16384;
+
+      if (bit >= n || field_get(field, bit) == value) break;
+
       i++;
     }
 
@@ -51,8 +56,11 @@ field_index_of (const field_t field, size_t field_len, bool value, size_t positi
 
     if (position > k) j = (position - k) / 128;
 
-    // TODO: SIMD'ify
     while (j < 128 && field_get(index, i * 128 + j + 128)) {
+      size_t bit = k + j * 128;
+
+      if (bit >= n || field_get(field, bit) == value) break;
+
       j++;
     }
 
@@ -74,6 +82,8 @@ ssize_t
 field_last_index_of (const field_t field, size_t field_len, bool value, size_t position, field_index_t index) {
   size_t n = field_len * 8;
 
+  if (n == 0) return -1;
+
   size_t i = position;
 
   while (i >= 0 && field_get(field, i) != value) {
@@ -84,23 +94,25 @@ field_last_index_of (const field_t field, size_t field_len, bool value, size_t p
 }
 
 void
-field_index_init (field_index_t index, const field_t field, size_t field_len, bool value) {
+field_index_init (field_index_t index, const field_t field, size_t field_len) {
   for (size_t i = 0; i < 128; i++) {
-    int16_t total = 0;
+    bool all_z = true;
+    bool all_o = true;
 
     for (size_t j = 0; j < 128; j++) {
       size_t offset = (i * 128 + j) * 16;
-      int16_t count = -1;
+      int16_t sum = -1;
 
       if (offset + 16 <= field_len) {
-        count = simd_sum_v128_u8(simd_cnt_v128_u8(simd_load_v128_u8(&field[offset])));
+        sum = simd_sum_v128_u8(simd_load_v128_u8(&field[offset]));
       }
 
-      field_set(index, i * 128 + j + 128, count == (value ? 128 : 0));
+      field_set(index, i * 128 + j + 128, sum == 0 || sum == 0xff * 16);
 
-      total += count;
+      all_z = all_z && sum == 0;
+      all_o = all_o && sum == 0xff * 16;
     }
 
-    field_set(index, i, total == (value ? 16384 : 0));
+    field_set(index, i, all_z || all_o);
   }
 }
