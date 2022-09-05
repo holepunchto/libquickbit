@@ -1,0 +1,22 @@
+name: Test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - run: cmake -S . -B build
+    - run: cmake --build build
+    - run: ctest --verbose --build-config Debug
+      working-directory: build/test
