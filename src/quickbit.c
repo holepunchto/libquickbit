@@ -33,7 +33,7 @@ quickbit_set (quickbit_t field, size_t bit, bool value) {
   return true;
 }
 
-ssize_t
+size_t
 quickbit_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index) {
   size_t n = field_len * 8;
 
@@ -77,7 +77,7 @@ quickbit_index_of (const quickbit_t field, size_t field_len, bool value, size_t 
   return i < n ? i : -1;
 }
 
-ssize_t
+size_t
 quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index) {
   size_t n = field_len * 8;
 

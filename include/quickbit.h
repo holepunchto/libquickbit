@@ -8,7 +8,6 @@ extern "C" {
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/types.h>
 
 #define QUICKBIT_INDEX_LEN 16 + 128 * 16
 
@@ -21,10 +20,10 @@ quickbit_get (const quickbit_t field, size_t bit);
 bool
 quickbit_set (quickbit_t field, size_t bit, bool value);
 
-ssize_t
+size_t
 quickbit_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index);
 
-ssize_t
+size_t
 quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index);
 
 void
