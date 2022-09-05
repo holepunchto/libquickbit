@@ -65,4 +65,3 @@ if(PROJECT_IS_TOP_LEVEL)
   enable_testing()
   add_subdirectory(test)
 endif()
-
