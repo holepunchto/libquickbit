@@ -1,4 +1,4 @@
-[submodule "vendor/libsimd"]
-	path = vendor/libsimd
-	url = git@github.com:holepunchto/libsimd.git
+[submodule "vendor/libsimdle"]
+	path = vendor/libsimdle
+	url = git@github.com:holepunchto/libsimdle.git
 	shallow = true

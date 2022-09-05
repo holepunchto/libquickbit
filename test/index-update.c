@@ -1,24 +1,24 @@
 #include <assert.h>
 
-#include "../include/field.h"
+#include "../include/quickbit.h"
 
 int
 main () {
   uint8_t field[1 << 18] = {0};
 
-  field_index_t index;
-  field_index_init(index, field, 1 << 18);
+  quickbit_index_t index;
+  quickbit_index_init(index, field, 1 << 18);
 
   bool c;
 
-  c = field_index_update(index, field, 1000000);
+  c = quickbit_index_update(index, field, 1000000);
   assert(!c);
 
-  field_set(field, 1000000, 1);
-  c = field_index_update(index, field, 1000000);
+  quickbit_set(field, 1000000, 1);
+  c = quickbit_index_update(index, field, 1000000);
   assert(c);
 
-  field_set(field, 1000000, 0);
-  c = field_index_update(index, field, 1000000);
+  quickbit_set(field, 1000000, 0);
+  c = quickbit_index_update(index, field, 1000000);
   assert(c);
 }

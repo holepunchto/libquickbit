@@ -1,66 +1,68 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(field C)
+project(quickbit C)
 
-add_subdirectory(vendor/libsimd EXCLUDE_FROM_ALL)
+add_subdirectory(vendor/libsimdle EXCLUDE_FROM_ALL)
 
-add_library(field OBJECT)
+add_library(quickbit OBJECT)
 
 set_target_properties(
-  field
+  quickbit
   PROPERTIES
   C_STANDARD 99
   POSITION_INDEPENDENT_CODE 1
 )
 
 target_sources(
-  field
+  quickbit
   INTERFACE
-    include/field.h
+    include/quickbit.h
   PRIVATE
-    src/field.c
+    src/quickbit.c
 )
 
 target_include_directories(
-  field
+  quickbit
   PUBLIC
     include
   PRIVATE
-    $<TARGET_PROPERTY:simd,INCLUDE_DIRECTORIES>
+    $<TARGET_PROPERTY:simdle,INCLUDE_DIRECTORIES>
 )
 
-add_library(field_shared SHARED $<TARGET_OBJECTS:field>)
+add_library(quickbit_shared SHARED $<TARGET_OBJECTS:quickbit>)
 
 set_target_properties(
-  field_shared
+  quickbit_shared
   PROPERTIES
-  OUTPUT_NAME field
+  OUTPUT_NAME quickbit
 )
 
 target_link_libraries(
-  field_shared
+  quickbit_shared
   PUBLIC
-    simd_shared
+    simdle_shared
 )
 
-add_library(field_static STATIC $<TARGET_OBJECTS:field>)
+add_library(quickbit_static STATIC $<TARGET_OBJECTS:quickbit>)
 
 set_target_properties(
-  field_static
+  quickbit_static
   PROPERTIES
-  OUTPUT_NAME field
+  OUTPUT_NAME quickbit
 )
 
 target_link_libraries(
-  field_static
+  quickbit_static
   PUBLIC
-    simd_static
+    simdle_static
 )
 
-install(TARGETS field_shared field_static)
+install(TARGETS quickbit_shared quickbit_static)
 
-install(FILES include/field.h DESTINATION include)
+install(FILES include/quickbit.h DESTINATION include)
 
-enable_testing()
+if(PROJECT_IS_TOP_LEVEL)
+  enable_testing()
+  add_subdirectory(test)
+endif()
 
-add_subdirectory(test)
