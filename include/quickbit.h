@@ -22,13 +22,13 @@ bool
 quickbit_set (quickbit_t field, size_t bit, bool value);
 
 ssize_t
-quickbit_index_of (const quickbit_t field, size_t quickbit_len, bool value, size_t position, quickbit_index_t index);
+quickbit_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index);
 
 ssize_t
-quickbit_last_index_of (const quickbit_t field, size_t quickbit_len, bool value, size_t position, quickbit_index_t index);
+quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index);
 
 void
-quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t quickbit_len);
+quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t field_len);
 
 bool
 quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t bit);

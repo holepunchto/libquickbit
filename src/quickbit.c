@@ -34,8 +34,8 @@ quickbit_set (quickbit_t field, size_t bit, bool value) {
 }
 
 ssize_t
-quickbit_index_of (const quickbit_t field, size_t quickbit_len, bool value, size_t position, quickbit_index_t index) {
-  size_t n = quickbit_len * 8;
+quickbit_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index) {
+  size_t n = field_len * 8;
 
   if (n == 0) return -1;
 
@@ -78,8 +78,8 @@ quickbit_index_of (const quickbit_t field, size_t quickbit_len, bool value, size
 }
 
 ssize_t
-quickbit_last_index_of (const quickbit_t field, size_t quickbit_len, bool value, size_t position, quickbit_index_t index) {
-  size_t n = quickbit_len * 8;
+quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index) {
+  size_t n = field_len * 8;
 
   if (n == 0) return -1;
 
@@ -93,7 +93,7 @@ quickbit_last_index_of (const quickbit_t field, size_t quickbit_len, bool value,
 }
 
 void
-quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t quickbit_len) {
+quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t field_len) {
   for (size_t i = 0; i < 128; i++) {
     bool all_z = true;
     bool all_o = true;
@@ -102,7 +102,7 @@ quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t quic
       size_t offset = (i * 128 + j) * 16;
       int16_t sum = -1;
 
-      if (offset + 16 <= quickbit_len) {
+      if (offset + 16 <= field_len) {
         sum = simdle_sum_v128_u8(simdle_load_v128_u8(&field[offset]));
       }
 
