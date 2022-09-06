@@ -20,6 +20,9 @@ quickbit_get (const quickbit_t field, size_t bit);
 bool
 quickbit_set (quickbit_t field, size_t bit, bool value);
 
+void
+quickbit_fill (const quickbit_t field, bool value, size_t start, size_t end);
+
 size_t
 quickbit_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index);
 

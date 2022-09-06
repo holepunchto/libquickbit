@@ -33,6 +33,42 @@ quickbit_set (quickbit_t field, size_t bit, bool value) {
   return true;
 }
 
+void
+quickbit_fill (const quickbit_t field, bool value, size_t start, size_t end) {
+  size_t n = end - start;
+  size_t i = start / 8;
+  size_t j = end / 8;
+
+  {
+    size_t offset = start & 7;
+
+    if (offset != 0) {
+      uint8_t shift = 8 - offset;
+      if (n < shift) shift = n;
+
+      uint8_t mask = ((1 << shift) - 1) << offset;
+
+      if (value) field[i] |= mask;
+      else field[i] &= ~mask;
+
+      i++;
+    }
+  }
+
+  {
+    size_t offset = end & 7;
+
+    if (offset != 0 && j >= i) {
+      uint8_t mask = (1 << offset) - 1;
+
+      if (value) field[j] |= mask;
+      else field[j] &= ~mask;
+    }
+  }
+
+  if (i < j) memset(&field[i], value ? 0xff : 0, j - i);
+}
+
 size_t
 quickbit_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index) {
   size_t n = field_len * 8;

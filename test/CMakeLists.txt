@@ -1,4 +1,5 @@
 list(APPEND tests
+  fill
   get
   index-of
   index-of-indexed
