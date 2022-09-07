@@ -5,18 +5,18 @@
 #include "../include/quickbit.h"
 
 bool
-quickbit_get (const quickbit_t field, size_t bit) {
-  size_t offset = bit & 7;
-  size_t i = bit / 8;
+quickbit_get (const quickbit_t field, int64_t bit) {
+  int64_t offset = bit & 7;
+  int64_t i = bit / 8;
 
   return (field[i] & (1 << offset)) != 0;
 }
 
 bool
-quickbit_set (quickbit_t field, size_t bit, bool value) {
-  size_t offset = bit & 7;
-  size_t i = bit / 8;
-  size_t mask = 1 << offset;
+quickbit_set (quickbit_t field, int64_t bit, bool value) {
+  int64_t offset = bit & 7;
+  int64_t i = bit / 8;
+  int64_t mask = 1 << offset;
 
   if (value) {
     if ((field[i] & mask) != 0) {
@@ -34,13 +34,13 @@ quickbit_set (quickbit_t field, size_t bit, bool value) {
 }
 
 void
-quickbit_fill (const quickbit_t field, bool value, size_t start, size_t end) {
-  size_t n = end - start;
-  size_t i = start / 8;
-  size_t j = end / 8;
+quickbit_fill (const quickbit_t field, bool value, int64_t start, int64_t end) {
+  int64_t n = end - start;
+  int64_t i = start / 8;
+  int64_t j = end / 8;
 
   {
-    size_t offset = start & 7;
+    int64_t offset = start & 7;
 
     if (offset != 0) {
       uint8_t shift = 8 - offset;
@@ -56,7 +56,7 @@ quickbit_fill (const quickbit_t field, bool value, size_t start, size_t end) {
   }
 
   {
-    size_t offset = end & 7;
+    int64_t offset = end & 7;
 
     if (offset != 0 && j >= i) {
       uint8_t mask = (1 << offset) - 1;
@@ -69,57 +69,57 @@ quickbit_fill (const quickbit_t field, bool value, size_t start, size_t end) {
   if (i < j) memset(&field[i], value ? 0xff : 0, j - i);
 }
 
-size_t
-quickbit_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index) {
-  size_t n = field_len * 8;
+int64_t
+quickbit_index_of (const quickbit_t field, size_t field_len, bool value, int64_t position, quickbit_index_t index) {
+  int64_t n = field_len * 8;
 
-  if (n == 0) return -1;
+  if (n == 0) return (int64_t) -1;
 
   if (index != NULL) {
-    size_t i = position / 16384;
+    int64_t i = position / 16384;
 
     while (i < 128 && quickbit_get(index, i)) {
-      size_t bit = i * 16384;
+      int64_t bit = i * 16384;
 
       if (bit >= n || quickbit_get(field, bit) == value) break;
 
       i++;
     }
 
-    size_t k = i * 16384;
-    size_t j = 0;
+    int64_t k = i * 16384;
+    int64_t j = 0;
 
     if (position > k) j = (position - k) / 128;
 
     while (j < 128 && quickbit_get(index, i * 128 + j + 128)) {
-      size_t bit = k + j * 128;
+      int64_t bit = k + j * 128;
 
       if (bit >= n || quickbit_get(field, bit) == value) break;
 
       j++;
     }
 
-    size_t l = k + j * 128;
+    int64_t l = k + j * 128;
 
     if (l > position) position = l;
   }
 
-  size_t i = position;
+  int64_t i = position;
 
   while (i < n && quickbit_get(field, i) != value) {
     i++;
   }
 
-  return i < n ? i : -1;
+  return i < n ? i : (int64_t) -1;
 }
 
-size_t
-quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, size_t position, quickbit_index_t index) {
-  size_t n = field_len * 8;
+int64_t
+quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, int64_t position, quickbit_index_t index) {
+  int64_t n = field_len * 8;
 
   if (n == 0) return -1;
 
-  size_t i = position;
+  int64_t i = position;
 
   while (i >= 0 && quickbit_get(field, i) != value) {
     i--;
@@ -130,12 +130,12 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, si
 
 void
 quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t field_len) {
-  for (size_t i = 0; i < 128; i++) {
+  for (int64_t i = 0; i < 128; i++) {
     bool all_z = true;
     bool all_o = true;
 
-    for (size_t j = 0; j < 128; j++) {
-      size_t offset = (i * 128 + j) * 16;
+    for (int64_t j = 0; j < 128; j++) {
+      int64_t offset = (i * 128 + j) * 16;
       int16_t sum = -1;
 
       if (offset + 16 <= field_len) {
@@ -153,9 +153,9 @@ quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t fiel
 }
 
 bool
-quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t bit) {
-  size_t i = bit / 16384;
-  size_t j = bit / 128;
+quickbit_index_update (quickbit_index_t index, const quickbit_t field, int64_t bit) {
+  int64_t i = bit / 16384;
+  int64_t j = bit / 128;
 
   uint16_t sum = simdle_sum_v128_u8(simdle_load_v128_u8(&field[j * 16]));
 

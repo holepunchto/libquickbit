@@ -8,7 +8,7 @@ main () {
 
   quickbit_set(field, 1000000, 1);
 
-  size_t i;
+  int64_t i;
 
   i = quickbit_index_of(field, 1 << 18, 1, 0, NULL);
   assert(i == 1000000);

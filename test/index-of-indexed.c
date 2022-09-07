@@ -11,7 +11,7 @@ main () {
   quickbit_index_t index;
   quickbit_index_init(index, field, 1 << 18);
 
-  size_t i;
+  int64_t i;
 
   i = quickbit_index_of(field, 1 << 18, 1, 0, index);
   assert(i == 1000000);
