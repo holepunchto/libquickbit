@@ -130,6 +130,8 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, in
 
 void
 quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t field_len) {
+  int64_t n = field_len;
+
   for (int64_t i = 0; i < 128; i++) {
     bool all_z = true;
     bool all_o = true;
@@ -138,7 +140,7 @@ quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t fiel
       int64_t offset = (i * 128 + j) * 16;
       int16_t sum = -1;
 
-      if (offset + 16 <= field_len) {
+      if (offset + 16 <= n) {
         sum = simdle_sum_v128_u8(simdle_load_v128_u8(&field[offset]));
       }
 
