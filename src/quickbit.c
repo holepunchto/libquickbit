@@ -146,7 +146,7 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, in
     while (i >= 0 && quickbit_get_unchecked(index, i)) {
       int64_t bit = i * 16384;
 
-      if (bit >= n || quickbit_get_unchecked(field, bit) == value) break;
+      if (i == 0 || bit >= n || quickbit_get_unchecked(field, bit) == value) break;
 
       i--;
     }
@@ -159,7 +159,7 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, in
     while (j >= 0 && quickbit_get_unchecked(index, i * 128 + j + 128)) {
       int64_t bit = k + j * 128;
 
-      if (bit >= n || quickbit_get_unchecked(field, bit) == value) break;
+      if (j == 0 || bit >= n || quickbit_get_unchecked(field, bit) == value) break;
 
       j--;
     }
