@@ -21,6 +21,9 @@ main () {
   i = quickbit_last_index_of(field, field_len, 1, 999999, NULL);
   assert(i == -1);
 
+  i = quickbit_last_index_of(field, field_len, 1, 0, NULL);
+  assert(i == -1);
+
   i = quickbit_last_index_of(field, 125000, 1, -1, NULL);
   assert(i == -1);
 }
