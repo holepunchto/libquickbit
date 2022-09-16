@@ -4,6 +4,8 @@ list(APPEND tests
   index-of
   index-of-indexed
   index-update
+  last-index-of
+  last-index-of-indexed
   set
 )
 

@@ -4,11 +4,12 @@
 
 int
 main () {
-  uint8_t field[1 << 18] = {0};
+  const size_t field_len = 1 << 18;
+  uint8_t field[field_len] = {0};
 
   field[100000] = 0xff;
-  assert(quickbit_get(field, 800000) == 1);
+  assert(quickbit_get(field, field_len, 800000) == 1);
 
   field[100000] = 0xfe;
-  assert(quickbit_get(field, 800000) == 0);
+  assert(quickbit_get(field, field_len, 800000) == 0);
 }

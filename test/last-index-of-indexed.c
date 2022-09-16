@@ -14,15 +14,15 @@ main () {
 
   int64_t i;
 
-  i = quickbit_index_of(field, field_len, 1, 0, index);
+  i = quickbit_last_index_of(field, field_len, 1, -1, index);
   assert(i == 1000000);
 
-  i = quickbit_index_of(field, field_len, 1, 1000000, index);
+  i = quickbit_last_index_of(field, field_len, 1, 1000000, index);
   assert(i == 1000000);
 
-  i = quickbit_index_of(field, field_len, 1, 1000001, index);
+  i = quickbit_last_index_of(field, field_len, 1, 999999, index);
   assert(i == -1);
 
-  i = quickbit_index_of(field, 125000, 1, 0, index);
+  i = quickbit_last_index_of(field, 125000, 1, -1, index);
   assert(i == -1);
 }

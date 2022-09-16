@@ -15,13 +15,13 @@ typedef uint8_t *quickbit_t;
 typedef uint8_t quickbit_index_t[QUICKBIT_INDEX_LEN];
 
 bool
-quickbit_get (const quickbit_t field, int64_t bit);
+quickbit_get (const quickbit_t field, size_t field_len, int64_t bit);
 
 bool
-quickbit_set (quickbit_t field, int64_t bit, bool value);
+quickbit_set (quickbit_t field, size_t field_len, int64_t bit, bool value);
 
 void
-quickbit_fill (const quickbit_t field, bool value, int64_t start, int64_t end);
+quickbit_fill (const quickbit_t field, size_t field_len, bool value, int64_t start, int64_t end);
 
 int64_t
 quickbit_index_of (const quickbit_t field, size_t field_len, bool value, int64_t position, quickbit_index_t index);
@@ -33,7 +33,7 @@ void
 quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t field_len);
 
 bool
-quickbit_index_update (quickbit_index_t index, const quickbit_t field, int64_t bit);
+quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t field_len, int64_t bit);
 
 #ifdef __cplusplus
 }
