@@ -2,9 +2,10 @@
 
 #include "../include/quickbit.h"
 
+#define field_len 1 << 18
+
 int
 main () {
-  const size_t field_len = 1 << 18;
   uint8_t field[field_len] = {0};
   field[100000] = 0xfe;
 

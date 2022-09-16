@@ -2,9 +2,10 @@
 
 #include "../include/quickbit.h"
 
+#define field_len 4
+
 int
 main () {
-  const size_t field_len = 4;
   uint8_t field[field_len] = {0};
 
   quickbit_fill(field, field_len, true, 4, 28);
