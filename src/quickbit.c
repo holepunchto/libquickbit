@@ -1,4 +1,5 @@
 #include <simdle.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -180,8 +181,6 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, in
 
 void
 quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t field_len) {
-  int64_t n = field_len;
-
   for (int64_t i = 0; i < 128; i++) {
     bool all_z = true;
     bool all_o = true;
@@ -190,7 +189,7 @@ quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t fiel
       int64_t offset = (i * 128 + j) * 16;
       int16_t sum = -1;
 
-      if (offset + 16 <= n) {
+      if (offset + 16 <= (int64_t) field_len) {
         sum = simdle_sum_v128_u8(simdle_load_v128_u8(&field[offset]));
       }
 
@@ -208,15 +207,37 @@ bool
 quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t field_len, int64_t bit) {
   if (bit < 0) bit += field_len * 8;
 
-  int64_t i = bit / 16384;
   int64_t j = bit / 128;
 
   uint16_t sum = simdle_sum_v128_u8(simdle_load_v128_u8(&field[j * 16]));
 
   if (quickbit_set_unchecked(index, 128 + j, sum == 0 || sum == 0xff * 16)) {
+    int64_t i = bit / 16384;
+
     sum = simdle_sum_v128_u8(simdle_load_v128_u8(&index[i * 16 + 16]));
 
-    quickbit_set_unchecked(index, i, sum == 0 || sum == 0xff * 16);
+    if (sum == 0xff * 16) {
+      bool all_z = true;
+      bool all_o = true;
+
+      for (int64_t j = 0; j < 128; j++) {
+        int64_t offset = (i * 128 + j) * 16;
+        int64_t sum = -1;
+
+        if (offset + 16 <= (int64_t) field_len) {
+          sum = field[offset];
+        }
+
+        all_z = all_z && sum == 0;
+        all_o = all_o && sum == 0xff;
+
+        if (!all_z && !all_o) break;
+      }
+
+      quickbit_set_unchecked(index, i, all_z || all_o);
+    } else {
+      quickbit_set_unchecked(index, i, 0);
+    }
 
     return true;
   }
