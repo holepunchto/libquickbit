@@ -89,6 +89,16 @@ quickbit_fill (const quickbit_t field, size_t field_len, bool value, int64_t sta
   if (i < j) memset(&field[i], value ? 0xff : 0, j - i);
 }
 
+static inline int64_t
+quickbit_index_bit_offset (bool bit, int64_t offset) {
+  return bit == 0 ? offset : (QUICKBIT_INDEX_LEN * 8 / 2) + offset;
+}
+
+static inline int64_t
+quickbit_index_byte_offset (bool bit, int64_t offset) {
+  return bit == 0 ? offset : (QUICKBIT_INDEX_LEN / 2) + offset;
+}
+
 int64_t
 quickbit_index_of (const quickbit_t field, size_t field_len, bool value, int64_t position, quickbit_index_t index) {
   int64_t n = field_len * 8;
@@ -99,10 +109,10 @@ quickbit_index_of (const quickbit_t field, size_t field_len, bool value, int64_t
   if (index != NULL) {
     int64_t i = position / 16384;
 
-    while (i < 128 && quickbit_get_unchecked(index, i)) {
+    while (i < 128 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i))) {
       int64_t bit = i * 16384;
 
-      if (i == 127 || bit >= n || quickbit_get_unchecked(field, bit) == value) break;
+      if (i == 127 || bit >= n) break;
 
       i++;
     }
@@ -112,10 +122,10 @@ quickbit_index_of (const quickbit_t field, size_t field_len, bool value, int64_t
 
     if (position > k) j = (position - k) / 128;
 
-    while (j < 128 && quickbit_get_unchecked(index, i * 128 + j + 128)) {
+    while (j < 128 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i * 128 + j + 128))) {
       int64_t bit = k + j * 128;
 
-      if (j == 127 || bit >= n || quickbit_get_unchecked(field, bit) == value) break;
+      if (j == 127 || bit >= n) break;
 
       j++;
     }
@@ -144,10 +154,10 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, in
   if (index != NULL) {
     int64_t i = position / 16384;
 
-    while (i >= 0 && quickbit_get_unchecked(index, i)) {
+    while (i >= 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i))) {
       int64_t bit = i * 16384;
 
-      if (i == 0 || bit >= n || quickbit_get_unchecked(field, bit) == value) break;
+      if (i == 0 || bit >= n) break;
 
       i--;
     }
@@ -157,10 +167,10 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, in
 
     if (position < k) j = (k - position) / 128;
 
-    while (j >= 0 && quickbit_get_unchecked(index, i * 128 + j + 128)) {
+    while (j >= 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i * 128 + j + 128))) {
       int64_t bit = k + j * 128;
 
-      if (j == 0 || bit >= n || quickbit_get_unchecked(field, bit) == value) break;
+      if (j == 0 || bit >= n) break;
 
       j--;
     }
@@ -182,9 +192,6 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, in
 void
 quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t field_len) {
   for (int64_t i = 0; i < 128; i++) {
-    bool all_z = true;
-    bool all_o = true;
-
     for (int64_t j = 0; j < 128; j++) {
       int64_t offset = (i * 128 + j) * 16;
       int16_t sum = -1;
@@ -193,13 +200,22 @@ quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t fiel
         sum = simdle_sum_v128_u8(simdle_load_v128_u8(&field[offset]));
       }
 
-      quickbit_set_unchecked(index, i * 128 + 128 + j, sum == 0 || sum == 0xff * 16);
+      int64_t k = i * 128 + 128 + j;
 
-      all_z = all_z && sum == 0;
-      all_o = all_o && sum == 0xff * 16;
+      quickbit_set_unchecked(index, quickbit_index_bit_offset(0, k), sum == 0);
+
+      quickbit_set_unchecked(index, quickbit_index_bit_offset(1, k), sum == 0xff * 16);
     }
 
-    quickbit_set_unchecked(index, i, all_z || all_o);
+    uint16_t sum;
+
+    sum = simdle_sum_v128_u8(simdle_load_v128_u8(&index[quickbit_index_byte_offset(0, i * 16 + 16)]));
+
+    quickbit_set_unchecked(index, quickbit_index_bit_offset(0, i), sum == 0);
+
+    sum = simdle_sum_v128_u8(simdle_load_v128_u8(&index[quickbit_index_byte_offset(1, i * 16 + 16)]));
+
+    quickbit_set_unchecked(index, quickbit_index_bit_offset(1, i), sum == 0xff * 16);
   }
 }
 
@@ -207,40 +223,28 @@ bool
 quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t field_len, int64_t bit) {
   if (bit < 0) bit += field_len * 8;
 
+  int64_t i = bit / 16384;
   int64_t j = bit / 128;
 
   uint16_t sum = simdle_sum_v128_u8(simdle_load_v128_u8(&field[j * 16]));
 
-  if (quickbit_set_unchecked(index, 128 + j, sum == 0 || sum == 0xff * 16)) {
-    int64_t i = bit / 16384;
+  bool changed = false;
 
-    sum = simdle_sum_v128_u8(simdle_load_v128_u8(&index[i * 16 + 16]));
+  if (quickbit_set_unchecked(index, quickbit_index_bit_offset(0, 128 + j), sum == 0)) {
+    changed = true;
 
-    if (sum == 0xff * 16) {
-      bool all_z = true;
-      bool all_o = true;
+    sum = simdle_sum_v128_u8(simdle_load_v128_u8(&index[quickbit_index_byte_offset(0, i * 16 + 16)]));
 
-      for (int64_t j = 0; j < 128; j++) {
-        int64_t offset = (i * 128 + j) * 16;
-        int64_t sum = -1;
-
-        if (offset + 16 <= (int64_t) field_len) {
-          sum = field[offset];
-        }
-
-        all_z = all_z && sum == 0;
-        all_o = all_o && sum == 0xff;
-
-        if (!all_z && !all_o) break;
-      }
-
-      quickbit_set_unchecked(index, i, all_z || all_o);
-    } else {
-      quickbit_set_unchecked(index, i, 0);
-    }
-
-    return true;
+    quickbit_set_unchecked(index, quickbit_index_bit_offset(0, i), sum == 0);
   }
 
-  return false;
+  if (quickbit_set_unchecked(index, quickbit_index_bit_offset(1, 128 + j), sum == 0xff * 16)) {
+    changed = true;
+
+    sum = simdle_sum_v128_u8(simdle_load_v128_u8(&index[quickbit_index_byte_offset(1, i * 16 + 16)]));
+
+    quickbit_set_unchecked(index, quickbit_index_bit_offset(1, i), sum == 0xff * 16);
+  }
+
+  return changed;
 }
