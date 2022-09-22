@@ -195,7 +195,7 @@ quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t fiel
 
     sum = simdle_sum_v128_u8(simdle_load_v128_u8(&index[quickbit_index_byte_offset(0, i * 16 + 16)]));
 
-    quickbit_set_unchecked(index, quickbit_index_bit_offset(0, i), sum == 0);
+    quickbit_set_unchecked(index, quickbit_index_bit_offset(0, i), sum == 0xff * 16);
 
     sum = simdle_sum_v128_u8(simdle_load_v128_u8(&index[quickbit_index_byte_offset(1, i * 16 + 16)]));
 
@@ -219,7 +219,7 @@ quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t fi
 
     sum = simdle_sum_v128_u8(simdle_load_v128_u8(&index[quickbit_index_byte_offset(0, i * 16 + 16)]));
 
-    quickbit_set_unchecked(index, quickbit_index_bit_offset(0, i), sum == 0);
+    quickbit_set_unchecked(index, quickbit_index_bit_offset(0, i), sum == 0xff * 16);
   }
 
   if (quickbit_set_unchecked(index, quickbit_index_bit_offset(1, 128 + j), sum == 0xff * 16)) {
