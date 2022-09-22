@@ -109,11 +109,7 @@ quickbit_index_of (const quickbit_t field, size_t field_len, bool value, int64_t
   if (index != NULL) {
     int64_t i = position / 16384;
 
-    while (i < 128 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i))) {
-      int64_t bit = i * 16384;
-
-      if (i == 127 || bit >= n) break;
-
+    while (i < 127 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i))) {
       i++;
     }
 
@@ -122,11 +118,7 @@ quickbit_index_of (const quickbit_t field, size_t field_len, bool value, int64_t
 
     if (position > k) j = (position - k) / 128;
 
-    while (j < 128 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i * 128 + j + 128))) {
-      int64_t bit = k + j * 128;
-
-      if (j == 127 || bit >= n) break;
-
+    while (j < 127 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i * 128 + j + 128))) {
       j++;
     }
 
@@ -154,11 +146,7 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, in
   if (index != NULL) {
     int64_t i = position / 16384;
 
-    while (i >= 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i))) {
-      int64_t bit = i * 16384;
-
-      if (i == 0 || bit >= n) break;
-
+    while (i > 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i))) {
       i--;
     }
 
@@ -167,11 +155,7 @@ quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, in
 
     if (position < k) j = (k - position) / 128;
 
-    while (j >= 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i * 128 + j + 128))) {
-      int64_t bit = k + j * 128;
-
-      if (j == 0 || bit >= n) break;
-
+    while (j > 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(!value, i * 128 + j + 128))) {
       j--;
     }
 
