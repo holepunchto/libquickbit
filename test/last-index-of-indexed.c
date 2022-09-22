@@ -2,7 +2,7 @@
 
 #include "../include/quickbit.h"
 
-#define field_len 1 << 18
+#define field_len (1 << 18)
 
 int
 main () {

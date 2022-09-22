@@ -9,7 +9,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 
-#define QUICKBIT_INDEX_LEN 16 + 128 * 16
+#define QUICKBIT_INDEX_LEN ((16 /* root */ + 128 * 16 /* children */) * 2)
 
 typedef uint8_t *quickbit_t;
 typedef uint8_t quickbit_index_t[QUICKBIT_INDEX_LEN];
