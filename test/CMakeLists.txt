@@ -13,7 +13,7 @@ list(APPEND tests
 foreach(test IN LISTS tests)
   add_executable(${test} ${test}.c)
 
-  target_link_libraries(${test} quickbit_static)
+  target_link_libraries(${test} quickbit_shared)
 
   add_test(
     NAME ${test}
