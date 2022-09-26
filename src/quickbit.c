@@ -195,7 +195,7 @@ quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t fi
   return changed;
 }
 
-int64_t
+inline int64_t
 quickbit_skip_forward (quickbit_index_t index, bool value, int64_t position) {
   int64_t i = position / 16384;
 
@@ -219,7 +219,10 @@ quickbit_skip_forward (quickbit_index_t index, bool value, int64_t position) {
   return position;
 }
 
-int64_t
+extern int64_t
+quickbit_skip_forward (quickbit_index_t index, bool value, int64_t position);
+
+inline int64_t
 quickbit_skip_backward (quickbit_index_t index, bool value, int64_t position) {
   int64_t i = position / 16384;
 
@@ -242,3 +245,6 @@ quickbit_skip_backward (quickbit_index_t index, bool value, int64_t position) {
 
   return position;
 }
+
+extern int64_t
+quickbit_skip_backward (quickbit_index_t index, bool value, int64_t position);
