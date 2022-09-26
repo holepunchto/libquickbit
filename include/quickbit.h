@@ -35,6 +35,12 @@ quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t fiel
 bool
 quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t field_len, int64_t bit);
 
+int64_t
+quickbit_skip_forward (quickbit_index_t index, bool value, int64_t position);
+
+int64_t
+quickbit_skip_backward (quickbit_index_t index, bool value, int64_t position);
+
 #ifdef __cplusplus
 }
 #endif
