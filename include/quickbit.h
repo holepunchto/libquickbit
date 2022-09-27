@@ -14,26 +14,40 @@ extern "C" {
 typedef uint8_t *quickbit_t;
 typedef uint8_t quickbit_index_t[QUICKBIT_INDEX_LEN];
 
-bool
-quickbit_get (const quickbit_t field, size_t field_len, int64_t bit);
+typedef struct quickbit_chunk_s quickbit_chunk_t;
+
+struct quickbit_chunk_s {
+  quickbit_t field;
+  size_t len;
+  size_t offset;
+};
 
 bool
-quickbit_set (quickbit_t field, size_t field_len, int64_t bit, bool value);
+quickbit_get (const quickbit_t field, size_t len, int64_t bit);
+
+bool
+quickbit_set (quickbit_t field, size_t len, int64_t bit, bool value);
 
 void
-quickbit_fill (const quickbit_t field, size_t field_len, bool value, int64_t start, int64_t end);
+quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, int64_t end);
 
 int64_t
-quickbit_index_of (const quickbit_t field, size_t field_len, bool value, int64_t position, quickbit_index_t index);
+quickbit_index_of (const quickbit_t field, size_t len, bool value, int64_t position, quickbit_index_t index);
 
 int64_t
-quickbit_last_index_of (const quickbit_t field, size_t field_len, bool value, int64_t position, quickbit_index_t index);
+quickbit_last_index_of (const quickbit_t field, size_t len, bool value, int64_t position, quickbit_index_t index);
 
 void
-quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t field_len);
+quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t len);
+
+void
+quickbit_index_init_sparse (quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len);
 
 bool
-quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t field_len, int64_t bit);
+quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t len, int64_t bit);
+
+bool
+quickbit_index_update_sparse (quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len, int64_t bit);
 
 int64_t
 quickbit_skip_forward (quickbit_index_t index, bool value, int64_t position);

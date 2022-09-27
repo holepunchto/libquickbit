@@ -8,6 +8,7 @@ list(APPEND tests
   last-index-of
   last-index-of-indexed
   set
+  sparse-index-update
 )
 
 foreach(test IN LISTS tests)
