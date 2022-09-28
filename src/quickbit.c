@@ -276,7 +276,7 @@ quickbit_skip_forward (quickbit_index_t index, size_t len, bool value, int64_t p
 
   if (position < 0) position += n;
   if (position < 0) position = 0;
-  if (position >= n) return n;
+  if (position >= n) return n - 1;
 
   int64_t i = position / 16384;
 
@@ -284,7 +284,7 @@ quickbit_skip_forward (quickbit_index_t index, size_t len, bool value, int64_t p
     i++;
   }
 
-  if (i == 128) return n;
+  if (i == 128) return n - 1;
 
   int64_t k = i * 16384;
   int64_t j = 0;
@@ -295,14 +295,13 @@ quickbit_skip_forward (quickbit_index_t index, size_t len, bool value, int64_t p
     j++;
   }
 
-  if (j == 128) return n;
+  if (j == 128) return n - 1;
 
   int64_t l = k + j * 128;
 
   if (l > position) position = l;
-  if (n < position) position = n;
 
-  return position;
+  return position < n ? position : n - 1;
 }
 
 int64_t
