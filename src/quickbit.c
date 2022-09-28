@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
 
 #include "../include/quickbit.h"
 
@@ -90,6 +89,64 @@ quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, in
   if (i < j) memset(&field[i], value ? 0xff : 0, j - i);
 }
 
+static inline int64_t
+quickbit_index_bit_offset (bool bit, int64_t offset) {
+  return bit == 0 ? offset : (QUICKBIT_INDEX_LEN * 8 / 2) + offset;
+}
+
+static inline int64_t
+quickbit_index_byte_offset (bool bit, int64_t offset) {
+  return bit == 0 ? offset : (QUICKBIT_INDEX_LEN / 2) + offset;
+}
+
+static inline int64_t
+quickbit_skip_forward_unchecked (quickbit_index_t index, bool value, int64_t position) {
+  int64_t i = position / 16384;
+
+  while (i < 127 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i))) {
+    i++;
+  }
+
+  int64_t k = i * 16384;
+  int64_t j = 0;
+
+  if (position > k) j = (position - k) / 128;
+
+  while (j < 127 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i * 128 + j + 128))) {
+    j++;
+  }
+
+  int64_t l = k + j * 128;
+
+  if (l > position) position = l;
+
+  return position;
+}
+
+static inline int64_t
+quickbit_skip_backward_unchecked (quickbit_index_t index, bool value, int64_t position) {
+  int64_t i = position / 16384;
+
+  while (i > 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i))) {
+    i--;
+  }
+
+  int64_t k = ((i + 1) * 16384) - 1;
+  int64_t j = 127;
+
+  if (position < k) j = (k - position) / 128;
+
+  while (j > 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i * 128 + j + 128))) {
+    j--;
+  }
+
+  int64_t l = k + ((j + 1) * 128) - 1;
+
+  if (l < position) position = l;
+
+  return position;
+}
+
 int64_t
 quickbit_index_of (const quickbit_t field, size_t len, bool value, int64_t position, quickbit_index_t index) {
   int64_t n = len * 8;
@@ -97,7 +154,7 @@ quickbit_index_of (const quickbit_t field, size_t len, bool value, int64_t posit
 
   if (position < 0) position += n;
 
-  if (index != NULL) position = quickbit_skip_forward(index, !value, position);
+  if (index != NULL) position = quickbit_skip_forward_unchecked(index, !value, position);
 
   int64_t i = position;
 
@@ -115,7 +172,7 @@ quickbit_last_index_of (const quickbit_t field, size_t len, bool value, int64_t 
 
   if (position < 0) position += n;
 
-  if (index != NULL) position = quickbit_skip_backward(index, !value, position);
+  if (index != NULL) position = quickbit_skip_backward_unchecked(index, !value, position);
 
   int64_t i = position;
 
@@ -124,16 +181,6 @@ quickbit_last_index_of (const quickbit_t field, size_t len, bool value, int64_t 
   }
 
   return i < n ? i : (int64_t) -1;
-}
-
-static inline int64_t
-quickbit_index_bit_offset (bool bit, int64_t offset) {
-  return bit == 0 ? offset : (QUICKBIT_INDEX_LEN * 8 / 2) + offset;
-}
-
-static inline int64_t
-quickbit_index_byte_offset (bool bit, int64_t offset) {
-  return bit == 0 ? offset : (QUICKBIT_INDEX_LEN / 2) + offset;
 }
 
 void
@@ -259,56 +306,16 @@ quickbit_index_update_sparse (quickbit_index_t index, const quickbit_chunk_t chu
   return quickbit_index_update_propagate(index, bit, sum);
 }
 
-inline int64_t
-quickbit_skip_forward (quickbit_index_t index, bool value, int64_t position) {
-  int64_t i = position / 16384;
+int64_t
+quickbit_skip_forward (quickbit_index_t index, size_t len, bool value, int64_t position) {
+  if (position < 0) position += len * 8;
 
-  while (i < 127 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i))) {
-    i++;
-  }
-
-  int64_t k = i * 16384;
-  int64_t j = 0;
-
-  if (position > k) j = (position - k) / 128;
-
-  while (j < 127 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i * 128 + j + 128))) {
-    j++;
-  }
-
-  int64_t l = k + j * 128;
-
-  if (l > position) position = l;
-
-  return position;
+  return quickbit_skip_forward_unchecked(index, value, position);
 }
 
-extern int64_t
-quickbit_skip_forward (quickbit_index_t index, bool value, int64_t position);
+int64_t
+quickbit_skip_backward (quickbit_index_t index, size_t len, bool value, int64_t position) {
+  if (position < 0) position += len * 8;
 
-inline int64_t
-quickbit_skip_backward (quickbit_index_t index, bool value, int64_t position) {
-  int64_t i = position / 16384;
-
-  while (i > 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i))) {
-    i--;
-  }
-
-  int64_t k = ((i + 1) * 16384) - 1;
-  int64_t j = 127;
-
-  if (position < k) j = (k - position) / 128;
-
-  while (j > 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i * 128 + j + 128))) {
-    j--;
-  }
-
-  int64_t l = k + ((j + 1) * 128) - 1;
-
-  if (l < position) position = l;
-
-  return position;
+  return quickbit_skip_backward_unchecked(index, value, position);
 }
-
-extern int64_t
-quickbit_skip_backward (quickbit_index_t index, bool value, int64_t position);
