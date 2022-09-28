@@ -32,10 +32,10 @@ void
 quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, int64_t end);
 
 int64_t
-quickbit_index_of (const quickbit_t field, size_t len, bool value, int64_t position, quickbit_index_t index);
+quickbit_find_first (const quickbit_t field, size_t len, bool value, int64_t position);
 
 int64_t
-quickbit_last_index_of (const quickbit_t field, size_t len, bool value, int64_t position, quickbit_index_t index);
+quickbit_find_last (const quickbit_t field, size_t len, bool value, int64_t position);
 
 void
 quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t len);

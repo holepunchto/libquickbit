@@ -1,14 +1,16 @@
 list(APPEND tests
   fill
+  find-first
+  find-first-indexed
+  find-last
+  find-last-indexed
   get
   index-init-sparse
-  index-of
-  index-of-indexed
   index-update
   index-update-sweep
-  last-index-of
-  last-index-of-indexed
   set
+  skip-backward
+  skip-forward
 )
 
 foreach(test IN LISTS tests)
