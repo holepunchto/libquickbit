@@ -24,4 +24,7 @@ main () {
 
   p = quickbit_skip_last(index, field_len, 0, -1);
   assert(p >= 1000000);
+
+  p = quickbit_skip_last(index, field_len, 0, 1000000);
+  assert(p == 1000000);
 }
