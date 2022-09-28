@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <stdio.h>
 
 #include "../include/quickbit.h"
 
@@ -16,4 +15,13 @@ main () {
 
   p = quickbit_skip_first(index, field_len, 0, 0);
   assert(p == field_len * 8 - 1);
+
+  p = quickbit_skip_first(index, field_len, 1, 0);
+  assert(p == 0);
+
+  quickbit_set(field, field_len, 1000000, 1);
+  quickbit_index_update(index, field, field_len, 1000000);
+
+  p = quickbit_skip_first(index, field_len, 0, 0);
+  assert(p <= 1000000);
 }
