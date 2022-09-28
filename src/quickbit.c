@@ -141,7 +141,7 @@ quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t len)
   for (int64_t i = 0; i < 128; i++) {
     for (int64_t j = 0; j < 128; j++) {
       int64_t offset = (i * 128 + j) * 16;
-      int16_t sum = -1;
+      int16_t sum = 0;
 
       if (offset + 16 <= (int64_t) len) {
         sum = simdle_sum_v128_u8(simdle_load_v128_u8(&field[offset]));
@@ -184,7 +184,7 @@ quickbit_index_init_sparse (quickbit_index_t index, const quickbit_chunk_t chunk
   for (int64_t i = 0; i < 128; i++) {
     for (int64_t j = 0; j < 128; j++) {
       int64_t offset = (i * 128 + j) * 16;
-      int16_t sum = -1;
+      int16_t sum = 0;
 
       quickbit_t chunk = quickbit_select_chunk(chunks, len, offset);
 
