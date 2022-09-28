@@ -126,7 +126,7 @@ quickbit_find_last (const quickbit_t field, size_t len, bool value, int64_t posi
     i--;
   }
 
-  return i < n ? i : -1;
+  return i;
 }
 
 static inline const quickbit_chunk_t *
