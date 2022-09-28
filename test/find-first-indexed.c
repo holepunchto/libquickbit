@@ -15,18 +15,18 @@ main () {
 
   int64_t i;
 
-  i = quickbit_find_first(field, field_len, 1, quickbit_skip_forward(index, field_len, 0, 0));
+  i = quickbit_find_first(field, field_len, 1, quickbit_skip_first(index, field_len, 0, 0));
   assert(i == 1000000);
 
-  i = quickbit_find_first(field, field_len, 1, quickbit_skip_forward(index, field_len, 0, 1000000));
+  i = quickbit_find_first(field, field_len, 1, quickbit_skip_first(index, field_len, 0, 1000000));
   assert(i == 1000000);
 
-  i = quickbit_find_first(field, field_len, 1, quickbit_skip_forward(index, field_len, 0, 1000001));
+  i = quickbit_find_first(field, field_len, 1, quickbit_skip_first(index, field_len, 0, 1000001));
   assert(i == -1);
 
-  i = quickbit_find_first(field, field_len, 1, quickbit_skip_forward(index, field_len, 0, -1));
+  i = quickbit_find_first(field, field_len, 1, quickbit_skip_first(index, field_len, 0, -1));
   assert(i == -1);
 
-  i = quickbit_find_first(field, 125000, 1, quickbit_skip_forward(index, field_len, 0, 0));
+  i = quickbit_find_first(field, 125000, 1, quickbit_skip_first(index, field_len, 0, 0));
   assert(i == -1);
 }

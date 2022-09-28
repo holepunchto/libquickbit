@@ -9,8 +9,8 @@ list(APPEND tests
   index-update
   index-update-sweep
   set
-  skip-backward
-  skip-forward
+  skip-first
+  skip-last
 )
 
 foreach(test IN LISTS tests)

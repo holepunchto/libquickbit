@@ -271,7 +271,7 @@ quickbit_index_update_sparse (quickbit_index_t index, const quickbit_chunk_t chu
 }
 
 int64_t
-quickbit_skip_forward (quickbit_index_t index, size_t len, bool value, int64_t position) {
+quickbit_skip_first (quickbit_index_t index, size_t len, bool value, int64_t position) {
   int64_t n = len * 8;
 
   if (position < 0) position += n;
@@ -305,7 +305,7 @@ quickbit_skip_forward (quickbit_index_t index, size_t len, bool value, int64_t p
 }
 
 int64_t
-quickbit_skip_backward (quickbit_index_t index, size_t len, bool value, int64_t position) {
+quickbit_skip_last (quickbit_index_t index, size_t len, bool value, int64_t position) {
   int64_t n = len * 8;
 
   if (position < 0) position += n;

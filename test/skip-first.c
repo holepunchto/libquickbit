@@ -14,6 +14,6 @@ main () {
 
   int64_t p;
 
-  p = quickbit_skip_backward(index, field_len, 0, -1);
-  assert(p == 0);
+  p = quickbit_skip_first(index, field_len, 0, 0);
+  assert(p == field_len * 8 - 1);
 }

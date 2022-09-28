@@ -23,7 +23,7 @@ if (quickbit_set(field, 1000000, true)) {
 }
 ```
 
-Once an index has been constructed, the `quickbit_skip_forward()` and `quickbit_skip_backward()` functions may be used to skip portions of the bit field that are not interesting for a given query.
+Once an index has been constructed, the `quickbit_skip_first()` and `quickbit_skip_last()` functions may be used to skip portions of the bit field that are not interesting for a given query.
 
 ## License
 

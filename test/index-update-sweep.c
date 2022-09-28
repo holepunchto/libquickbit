@@ -20,7 +20,7 @@ main () {
     // The index should update on either side of a 128 bit boundary
     assert(i % 128 == 0 || i % 128 == 127 ? c : !c);
 
-    int64_t j = quickbit_find_first(field, field_len, 0, quickbit_skip_forward(index, field_len, 1, 0));
+    int64_t j = quickbit_find_first(field, field_len, 0, quickbit_skip_first(index, field_len, 1, 0));
 
     assert(j == i + 1);
   }
