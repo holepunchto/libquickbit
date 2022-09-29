@@ -105,11 +105,32 @@ quickbit_find_first (const quickbit_t field, size_t len, bool value, int64_t pos
 
   int64_t i = position;
 
-  while (i < n && quickbit_get_unchecked(field, i) != value) {
+  while ((i & 127) != 0 && i < n) {
+    if (quickbit_get_unchecked(field, i) == value) return i;
     i++;
   }
 
-  return i < n ? i : -1;
+  while (i + 127 < n) {
+    simdle_v128_t v = simdle_load_v128_u8(&field[i / 8]);
+    simdle_v128_t t = value ? simdle_ctz_v128_u32(v) : simdle_cto_v128_u32(v);
+
+    int16_t offset = 0;
+
+    for (int j = 0; j < 4; j++) {
+      int16_t v = t.u32[j];
+      offset += v;
+      if (v != 32) return i + offset;
+    }
+
+    i += 128;
+  }
+
+  while (i < n) {
+    if (quickbit_get_unchecked(field, i) == value) return i;
+    i++;
+  }
+
+  return -1;
 }
 
 int64_t
@@ -122,11 +143,32 @@ quickbit_find_last (const quickbit_t field, size_t len, bool value, int64_t posi
 
   int64_t i = position;
 
-  while (i >= 0 && quickbit_get_unchecked(field, i) != value) {
+  while ((i & 127) != 127 && i >= 0) {
+    if (quickbit_get_unchecked(field, i) == value) return i;
     i--;
   }
 
-  return i;
+  while (i - 127 >= 0) {
+    simdle_v128_t v = simdle_load_v128_u8(&field[(i - 127) / 8]);
+    simdle_v128_t t = value ? simdle_clz_v128_u32(v) : simdle_clo_v128_u32(v);
+
+    int16_t offset = 0;
+
+    for (int j = 3; j >= 0; j--) {
+      int16_t v = t.u32[j];
+      offset += v;
+      if (v != 32) return i - offset;
+    }
+
+    i -= 128;
+  }
+
+  while (i >= 0) {
+    if (quickbit_get_unchecked(field, i) == value) return i;
+    i--;
+  }
+
+  return -1;
 }
 
 static inline const quickbit_chunk_t *
