@@ -56,11 +56,11 @@ quickbit_set (quickbit_t field, size_t len, int64_t bit, bool value) {
 
 void
 quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, int64_t end) {
-  if (start < 0) start += len * 8;
-  if (end < 0) end += len * 8;
+  int64_t n = len * 8;
 
-  int64_t n = end - start;
-  if (n < 0) return;
+  if (start < 0) start += n;
+  if (end < 0) end += n;
+  if (start < 0 || start >= n || start >= end) return;
 
   int64_t i = start / 8;
   int64_t j = end / 8;
@@ -70,7 +70,7 @@ quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, in
 
     if (offset != 0) {
       uint8_t shift = 8 - offset;
-      if (n < shift) shift = n;
+      if (end - start < shift) shift = end - start;
 
       uint8_t mask = ((1 << shift) - 1) << offset;
 
