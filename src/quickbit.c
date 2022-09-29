@@ -338,7 +338,7 @@ quickbit_skip_first (quickbit_index_t index, size_t len, bool value, int64_t pos
     k += 128;
   }
 
-  if (j == 128) return quickbit_skip_first(index, len, value, k);
+  if (j == 128) return quickbit_skip_first(index, len, value, (i + 1) * 16384);
 
   if (k > position) position = k;
 
@@ -371,7 +371,7 @@ quickbit_skip_last (quickbit_index_t index, size_t len, bool value, int64_t posi
     k -= 128;
   }
 
-  if (j == -1) return quickbit_skip_last(index, len, value, k);
+  if (j == -1) return quickbit_skip_last(index, len, value, i * 16384 - 1);
 
   if (k < position) position = k;
 
