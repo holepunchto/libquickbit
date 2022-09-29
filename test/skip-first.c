@@ -19,12 +19,15 @@ main () {
   p = quickbit_skip_first(index, field_len, 1, 0);
   assert(p == 0);
 
-  quickbit_set(field, field_len, 1000000, 1);
-  quickbit_index_update(index, field, field_len, 1000000);
+  quickbit_set(field, field_len, 0, 1);
+  quickbit_index_update(index, field, field_len, 0);
+
+  quickbit_set(field, field_len, 16384, 1);
+  quickbit_index_update(index, field, field_len, 16384);
 
   p = quickbit_skip_first(index, field_len, 0, 0);
-  assert(p <= 1000000);
+  assert(p == 0);
 
-  p = quickbit_skip_first(index, field_len, 0, 1000000);
-  assert(p == 1000000);
+  p = quickbit_skip_first(index, field_len, 0, 128);
+  assert(p <= 16384);
 }

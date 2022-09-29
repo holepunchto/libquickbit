@@ -337,7 +337,7 @@ quickbit_skip_first (quickbit_index_t index, size_t len, bool value, int64_t pos
     j++;
   }
 
-  if (j == 128) return n - 1;
+  if (j == 128) return k;
 
   int64_t l = k + j * 128;
 
@@ -371,7 +371,7 @@ quickbit_skip_last (quickbit_index_t index, size_t len, bool value, int64_t posi
     j--;
   }
 
-  if (j == -1) return 0;
+  if (j == -1) return k;
 
   int64_t l = k + ((j + 1) * 128) - 1;
 
