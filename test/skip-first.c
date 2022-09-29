@@ -29,5 +29,5 @@ main () {
   assert(p == 0);
 
   p = quickbit_skip_first(index, field_len, 0, 128);
-  assert(p <= 16384);
+  assert(p == 16384);
 }

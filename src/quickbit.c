@@ -335,13 +335,12 @@ quickbit_skip_first (quickbit_index_t index, size_t len, bool value, int64_t pos
 
   while (j <= 127 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i * 128 + j + 128))) {
     j++;
+    k += 128;
   }
 
-  if (j == 128) return k;
+  if (j == 128) return quickbit_skip_first(index, len, value, k);
 
-  int64_t l = k + j * 128;
-
-  if (l > position) position = l;
+  if (k > position) position = k;
 
   return position < n ? position : n - 1;
 }
@@ -369,13 +368,12 @@ quickbit_skip_last (quickbit_index_t index, size_t len, bool value, int64_t posi
 
   while (j >= 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i * 128 + j + 128))) {
     j--;
+    k -= 128;
   }
 
-  if (j == -1) return k;
+  if (j == -1) return quickbit_skip_last(index, len, value, k);
 
-  int64_t l = k + ((j + 1) * 128) - 1;
-
-  if (l < position) position = l;
+  if (k < position) position = k;
 
   return position;
 }

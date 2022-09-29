@@ -26,8 +26,8 @@ main () {
   quickbit_index_update(index, field, field_len, 16384);
 
   p = quickbit_skip_last(index, field_len, 0, -1);
-  assert(p >= 16384);
+  assert(p == 16384 + 127);
 
-  p = quickbit_skip_last(index, field_len, 0, 16384 - 128);
-  assert(p <= 16384);
+  p = quickbit_skip_last(index, field_len, 0, 16384 - 1);
+  assert(p == 127);
 }
