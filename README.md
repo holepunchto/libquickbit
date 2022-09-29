@@ -27,7 +27,7 @@ Once an index has been constructed, the `quickbit_skip_first()` and `quickbit_sk
 
 #### Sparse fields
 
-In cases where memory is at a premium, a alternate API is available for indexing sparse bit fields. This API conceptually operates on several `(field, offset)` tuples and assumes that any holes encountered consist of zeros. Other than the representation of the bit field, the sparse API produces indexes that are indentical to those produced by the dense API.
+In cases where memory is at a premium, an alternate API is available for indexing sparse bit fields. This API conceptually operates on several `(field, offset)` tuples and assumes that any holes encountered consist of zeros. Other than the representation of the bit field, the sparse API produces indexes that are indentical to those produced by the dense API.
 
 Bit field chunks must be aligned to 128 bit boundaries, must be passed sorted by their byte offset, and must not overlap:
 
