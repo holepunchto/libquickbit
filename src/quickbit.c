@@ -296,7 +296,11 @@ quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t le
 
 bool
 quickbit_index_update_sparse (quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len, int64_t bit) {
-  int64_t n = len * 8;
+  if (len == 0) return false;
+
+  const quickbit_chunk_t *last = &chunks[len - 1];
+
+  int64_t n = (last->offset + last->len) * 8;
 
   if (bit < 0) bit += n;
   if (bit < 0 || bit >= n) return false;
