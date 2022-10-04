@@ -58,4 +58,5 @@ quickbit_skip_last (quickbit_index_t index, size_t len, bool value, int64_t posi
 #ifdef __cplusplus
 }
 #endif
+
 #endif // QUICKBIT_H
