@@ -176,7 +176,10 @@ quickbit_select_chunk (const quickbit_chunk_t chunks[], size_t len, int64_t offs
   for (size_t i = 0; i < len; i++) {
     const quickbit_chunk_t *next = &chunks[i];
 
-    if (offset >= (int64_t) next->offset && offset + 16 <= (int64_t) (next->offset + next->len)) {
+    int64_t start = next->offset;
+    int64_t end = next->offset + next->len;
+
+    if (offset >= start && offset + 16 <= end) {
       return next;
     }
   }
