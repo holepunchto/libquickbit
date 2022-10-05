@@ -30,4 +30,7 @@ main () {
 
   p = quickbit_skip_first(index, field_len, 0, 128);
   assert(p == 16384);
+
+  p = quickbit_skip_first(index, field_len * 4, 0, -1);
+  assert(p == field_len * 4 * 8 - 1);
 }

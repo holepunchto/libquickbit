@@ -326,6 +326,8 @@ quickbit_skip_first (quickbit_index_t index, size_t len, bool value, int64_t pos
 
   int64_t i = position / 16384;
 
+  if (i > 127) return position;
+
   while (i <= 127 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i))) {
     i++;
   }
@@ -358,6 +360,8 @@ quickbit_skip_last (quickbit_index_t index, size_t len, bool value, int64_t posi
   if (position >= n) position = n - 1;
 
   int64_t i = position / 16384;
+
+  if (i > 127) return position;
 
   while (i >= 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i))) {
     i--;
