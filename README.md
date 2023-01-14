@@ -4,7 +4,7 @@ The fastest bit in the West; a library for working with bit fields, accelerated 
 
 ## API
 
-See [`includes/quickbit.h`](include/quickbit.h) for the public API.
+See [`include/quickbit.h`](include/quickbit.h) for the public API.
 
 ### Indexing
 
