@@ -52,6 +52,7 @@ set_target_properties(
   quickbit_static
   PROPERTIES
   OUTPUT_NAME quickbit
+  PREFIX lib
 )
 
 target_link_libraries(

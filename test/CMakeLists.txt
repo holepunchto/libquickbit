@@ -15,7 +15,13 @@ list(APPEND tests
 )
 
 foreach(test IN LISTS tests)
-  add_executable(${test} ${test}.c $<TARGET_OBJECTS:quickbit>)
+  add_executable(${test} ${test}.c)
+
+  target_link_libraries(
+    ${test}
+    PRIVATE
+      quickbit_static
+  )
 
   add_test(
     NAME ${test}
