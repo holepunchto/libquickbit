@@ -12,6 +12,7 @@ list(APPEND tests
   set
   skip-first
   skip-last
+  skip-last-index-boundary
 )
 
 foreach(test IN LISTS tests)
