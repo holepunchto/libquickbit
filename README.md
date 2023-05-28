@@ -55,4 +55,4 @@ if (quickbit_set(chunks[1].field, 100, true)) {
 
 ## License
 
-ISC
+Apache 2.0
