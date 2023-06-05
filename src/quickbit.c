@@ -382,7 +382,7 @@ quickbit_skip_last (quickbit_index_t index, size_t len, bool value, int64_t posi
   int64_t k = ((i + 1) * 16384) - 1;
   int64_t j = 127;
 
-  if (position < k) j = 128 - (k - position) / 128;
+  if (position < k) j = 128 - ((k - position) + 127) / 128;
 
   while (j >= 0 && quickbit_get_unchecked(index, quickbit_index_bit_offset(value, i * 128 + j + 128))) {
     j--;
