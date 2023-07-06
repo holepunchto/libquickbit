@@ -8,7 +8,7 @@ See [`include/quickbit.h`](include/quickbit.h) for the public API.
 
 ### Indexing
 
-Bit fields may be indexed to enable skipping uninteresting portions in effectively constant time. An index is a 128-ary balanced tree of bits with a set bit in a branch indicating that all bits below are the same. An index has a fixed depth of 3 with leaves of the tree being the bit field itself. A single index can therefore contain 128^3 bits (256 KiB). To index more than 256 KiB, several indices may be used.
+Bit fields may be indexed to enable skipping uninteresting portions in effectively constant time. An index is two 128-ary balanced trees of bits with a set bit in a branch indicating that all bits below are the same, either unset or set depending on the tree. An index has a fixed depth of 3 with leaves of the trees being the bit field itself. A single index can therefore contain 128^3 bits (256 KiB). To index more than 256 KiB, several indices may be used.
 
 An index is initialised using `quickbit_index_init()` and maintained using `quickbit_index_update()`:
 
