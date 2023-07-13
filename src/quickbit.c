@@ -100,20 +100,18 @@ quickbit_clear (const quickbit_t field, size_t len, const quickbit_chunk_t *chun
   if (chunk->offset >= len) return;
 
   int64_t n = len;
-  int64_t m = chunk->offset + chunk->len;
-
-  if (m < n) n = m;
+  int64_t m = chunk->len;
 
   int64_t i = chunk->offset;
   int64_t j = 0;
 
-  while ((i & 15) != 0 && (j & 15) != 0 && i < n) {
+  while ((i & 15) != 0 && (j & 15) != 0 && i < n && j < m) {
     field[i] = field[i] & ~chunk->field[j];
     i++;
     j++;
   }
 
-  while (i + 15 < n) {
+  while (i + 15 < n && j + 15 < m) {
     simdle_v128_t a = simdle_load_v128_u8(&field[i]);
     simdle_v128_t b = simdle_load_v128_u8(&chunk->field[j]);
 
@@ -123,7 +121,7 @@ quickbit_clear (const quickbit_t field, size_t len, const quickbit_chunk_t *chun
     j += 16;
   }
 
-  while (i < n) {
+  while (i < n && j < m) {
     field[i] = field[i] & ~chunk->field[j];
     i++;
     j++;
