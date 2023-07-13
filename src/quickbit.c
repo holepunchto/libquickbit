@@ -95,6 +95,41 @@ quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, in
   if (i < j) memset(&field[i], value ? 0xff : 0, j - i);
 }
 
+void
+quickbit_clear (const quickbit_t field, size_t len, const quickbit_chunk_t *chunk) {
+  if (chunk->offset >= len) return;
+
+  int64_t n = len;
+  int64_t m = chunk->offset + chunk->len;
+
+  if (m < n) n = m;
+
+  int64_t i = chunk->offset;
+  int64_t j = 0;
+
+  while ((i & 15) != 0 && i < n) {
+    field[i] = field[i] & ~chunk->field[j];
+    i++;
+    j++;
+  }
+
+  while (i + 15 < n) {
+    simdle_v128_t a = simdle_load_v128_u8(&field[i]);
+    simdle_v128_t b = simdle_load_v128_u8(&chunk->field[j]);
+
+    simdle_store_v128_u8(&field[i], simdle_clear_v128_u8(a, b));
+
+    i += 16;
+    j += 16;
+  }
+
+  while (i < n) {
+    field[i] = field[i] & ~chunk->field[j];
+    i++;
+    j++;
+  }
+}
+
 int64_t
 quickbit_find_first (const quickbit_t field, size_t len, bool value, int64_t position) {
   int64_t n = len * 8;

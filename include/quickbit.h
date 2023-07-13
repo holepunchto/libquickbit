@@ -31,6 +31,9 @@ quickbit_set (quickbit_t field, size_t len, int64_t bit, bool value);
 void
 quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, int64_t end);
 
+void
+quickbit_clear (const quickbit_t field, size_t len, const quickbit_chunk_t *chunk);
+
 int64_t
 quickbit_find_first (const quickbit_t field, size_t len, bool value, int64_t position);
 

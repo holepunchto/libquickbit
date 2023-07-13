@@ -1,4 +1,5 @@
 list(APPEND tests
+  clear
   fill
   find-first
   find-first-indexed
