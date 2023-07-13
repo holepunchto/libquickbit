@@ -107,7 +107,7 @@ quickbit_clear (const quickbit_t field, size_t len, const quickbit_chunk_t *chun
   int64_t i = chunk->offset;
   int64_t j = 0;
 
-  while ((i & 15) != 0 && i < n) {
+  while ((i & 15) != 0 && (j & 15) != 0 && i < n) {
     field[i] = field[i] & ~chunk->field[j];
     i++;
     j++;
