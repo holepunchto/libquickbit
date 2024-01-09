@@ -1,4 +1,4 @@
 [submodule "vendor/libsimdle"]
 	path = vendor/libsimdle
-	url = git@github.com:holepunchto/libsimdle.git
+	url = ../../holepunchto/libsimdle.git
 	shallow = true
