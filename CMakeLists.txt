@@ -31,7 +31,7 @@ target_include_directories(
     $<TARGET_PROPERTY:simdle,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
-add_library(quickbit_shared SHARED $<TARGET_OBJECTS:quickbit>)
+add_library(quickbit_shared SHARED)
 
 set_target_properties(
   quickbit_shared
@@ -43,10 +43,11 @@ set_target_properties(
 target_link_libraries(
   quickbit_shared
   PUBLIC
+    quickbit
     simdle_shared
 )
 
-add_library(quickbit_static STATIC $<TARGET_OBJECTS:quickbit>)
+add_library(quickbit_static STATIC)
 
 set_target_properties(
   quickbit_static
@@ -58,6 +59,7 @@ set_target_properties(
 target_link_libraries(
   quickbit_static
   PUBLIC
+    quickbit
     simdle_static
 )
 
@@ -67,5 +69,6 @@ install(FILES include/quickbit.h DESTINATION include)
 
 if(PROJECT_IS_TOP_LEVEL)
   enable_testing()
+
   add_subdirectory(test)
 endif()
