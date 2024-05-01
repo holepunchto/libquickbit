@@ -64,32 +64,29 @@ quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, in
 
   int64_t i = start / 8;
   int64_t j = end / 8;
+  int64_t offset;
 
-  {
-    int64_t offset = start & 7;
+  offset = start & 7;
 
-    if (offset != 0) {
-      uint8_t shift = 8 - offset;
-      if (end - start < shift) shift = end - start;
+  if (offset != 0) {
+    uint8_t shift = 8 - offset;
+    if (end - start < shift) shift = end - start;
 
-      uint8_t mask = ((1 << shift) - 1) << offset;
+    uint8_t mask = ((1 << shift) - 1) << offset;
 
-      if (value) field[i] |= mask;
-      else field[i] &= ~mask;
+    if (value) field[i] |= mask;
+    else field[i] &= ~mask;
 
-      i++;
-    }
+    i++;
   }
 
-  {
-    int64_t offset = end & 7;
+  offset = end & 7;
 
-    if (offset != 0 && j >= i) {
-      uint8_t mask = (1 << offset) - 1;
+  if (offset != 0 && j >= i) {
+    uint8_t mask = (1 << offset) - 1;
 
-      if (value) field[j] |= mask;
-      else field[j] &= ~mask;
-    }
+    if (value) field[j] |= mask;
+    else field[j] &= ~mask;
   }
 
   if (i < j) memset(&field[i], value ? 0xff : 0, j - i);
@@ -310,20 +307,18 @@ quickbit_index__update_propagate (quickbit_index_t index, int64_t bit, simdle_v1
 
   if (quickbit__set_unchecked(index, quickbit_index__bit_offset(0, 128 + j), allz)) {
     changed = true;
-    {
-      bool allo = simdle_allo_v128(simdle_load_v128_u8(&index[quickbit_index__byte_offset(0, i * 16 + 16)]));
 
-      quickbit__set_unchecked(index, quickbit_index__bit_offset(0, i), allo);
-    }
+    bool allo = simdle_allo_v128(simdle_load_v128_u8(&index[quickbit_index__byte_offset(0, i * 16 + 16)]));
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(0, i), allo);
   }
 
   if (quickbit__set_unchecked(index, quickbit_index__bit_offset(1, 128 + j), allo)) {
     changed = true;
-    {
-      bool allo = simdle_allo_v128(simdle_load_v128_u8(&index[quickbit_index__byte_offset(1, i * 16 + 16)]));
 
-      quickbit__set_unchecked(index, quickbit_index__bit_offset(1, i), allo);
-    }
+    bool allo = simdle_allo_v128(simdle_load_v128_u8(&index[quickbit_index__byte_offset(1, i * 16 + 16)]));
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(1, i), allo);
   }
 
   return changed;
