@@ -6,6 +6,7 @@ list(APPEND tests
   find-last
   find-last-indexed
   get
+  index-fill
   index-init
   index-init-sparse
   index-update

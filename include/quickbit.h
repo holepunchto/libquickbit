@@ -52,6 +52,9 @@ quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t le
 bool
 quickbit_index_update_sparse (quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len, int64_t bit);
 
+int
+quickbit_index_fill (quickbit_index_t index, const quickbit_t field, size_t len, bool value, int64_t start, int64_t end);
+
 int64_t
 quickbit_skip_first (quickbit_index_t index, size_t len, bool value, int64_t position);
 
