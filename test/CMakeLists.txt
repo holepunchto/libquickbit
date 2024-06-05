@@ -7,6 +7,7 @@ list(APPEND tests
   find-last-indexed
   get
   index-fill
+  index-fill-aligned
   index-init
   index-init-sparse
   index-update
@@ -18,30 +19,22 @@ list(APPEND tests
 )
 
 foreach(test IN LISTS tests)
-  set(target test_${test})
-
-  add_executable(${target} ${test}.c)
-
-  set_target_properties(
-    ${target}
-    PROPERTIES
-    OUTPUT_NAME ${test}
-  )
+  add_executable(${test} ${test}.c)
 
   target_link_libraries(
-    ${target}
+    ${test}
     PRIVATE
       quickbit_static
   )
 
   add_test(
-    NAME ${target}
-    COMMAND ${target}
+    NAME ${test}
+    COMMAND ${test}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
   )
 
   set_tests_properties(
-    ${target}
+    ${test}
     PROPERTIES
     TIMEOUT 30
   )
