@@ -18,23 +18,33 @@ list(APPEND tests
 )
 
 foreach(test IN LISTS tests)
-  add_executable(${test} ${test}.c)
+  set(target test_${test})
+
+  add_executable(${target} ${test}.c)
+
+  set_target_properties(
+    ${target}
+    PROPERTIES
+    OUTPUT_NAME ${test}
+  )
 
   target_link_libraries(
-    ${test}
+    ${target}
     PRIVATE
       quickbit_static
   )
 
   add_test(
-    NAME ${test}
-    COMMAND ${test}
+    NAME ${target}
+    COMMAND ${target}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
   )
 
   set_tests_properties(
-    ${test}
+    ${target}
     PROPERTIES
     TIMEOUT 30
   )
 endforeach()
+
+add_subdirectory(fuzz)
