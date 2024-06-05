@@ -10,13 +10,26 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+        - os: ubuntu-latest
+          platform: linux
+          arch: x64
+        - os: macos-latest
+          platform: darwin
+          arch: arm64
+        - os: windows-latest
+          platform: win32
+          arch: x64
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix.platform }}-${{ matrix.arch }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
-    - run: cmake -S . -B build
-    - run: cmake --build build
-    - run: ctest --verbose --build-config Debug
-      working-directory: build/test
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - run: npm install -g bare-dev
+    - run: bare-dev configure --debug --platform ${{ matrix.platform }} --arch ${{ matrix.arch }}
+    - run: bare-dev build --debug
+    - run: bare-dev test --debug
