@@ -49,7 +49,7 @@ quickbit_index_t index;
 quickbit_index_init_sparse(index, chunks, 2);
 
 if (quickbit_set(chunks[1].field, 100, true)) {
-  quickbit_index_update_sparse(index, chunks, 2, 2048 * 8 + 100);
+  quickbit_index_update_sparse(index, chunks, 2, chunks[1].offset * 8 + 100);
 }
 ```
 
