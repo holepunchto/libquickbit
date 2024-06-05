@@ -451,6 +451,125 @@ quickbit_index_fill (quickbit_index_t index, const quickbit_t field, size_t len,
   return 0;
 }
 
+int
+quickbit_index_fill_sparse (quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len, bool value, int64_t start, int64_t end) {
+  if (start < 0 || start >= end) return 0;
+
+  int64_t i = start / 16384;
+  int64_t n = 1 + ((end - 1) / 16384);
+
+  int64_t j = start / 128;
+  int64_t m = 1 + ((end - 1) / 128);
+
+  if ((start & 127) != 0) {
+    int64_t offset = j * 16;
+    bool allz = true;
+    bool allo = false;
+
+    const quickbit_chunk_t *chunk = quickbit__select_chunk(chunks, len, offset);
+
+    if (chunk != NULL) {
+      simdle_v128_t vec = simdle_load_v128_u8(&chunk->field[offset - chunk->offset]);
+
+      allz = simdle_allz_v128(vec);
+      allo = simdle_allo_v128(vec);
+    }
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(0, 128 + j), allz);
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(1, 128 + j), allo);
+
+    j++;
+  }
+
+  if ((end & 127) != 0 && j < m) {
+    int64_t offset = (m - 1) * 16;
+    bool allz = true;
+    bool allo = false;
+
+    const quickbit_chunk_t *chunk = quickbit__select_chunk(chunks, len, offset);
+
+    if (chunk != NULL) {
+      simdle_v128_t vec = simdle_load_v128_u8(&chunk->field[offset - chunk->offset]);
+
+      allz = simdle_allz_v128(vec);
+      allo = simdle_allo_v128(vec);
+    }
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(0, 128 + m - 1), allz);
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(1, 128 + m - 1), allo);
+
+    m--;
+  }
+
+  if (j < m) {
+    quickbit_fill(
+      index,
+      QUICKBIT_INDEX_LEN,
+      value == 0,
+      quickbit_index__bit_offset(0, 128 + j),
+      quickbit_index__bit_offset(0, 128 + m)
+    );
+
+    quickbit_fill(
+      index,
+      QUICKBIT_INDEX_LEN,
+      value == 1,
+      quickbit_index__bit_offset(1, 128 + j),
+      quickbit_index__bit_offset(1, 128 + m)
+    );
+  }
+
+  if ((start & 16383) != 0) {
+    bool allo;
+
+    allo = simdle_allo_v128(simdle_load_v128_u8(&index[quickbit_index__byte_offset(0, i * 16 + 16)]));
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(0, i), allo);
+
+    allo = simdle_allo_v128(simdle_load_v128_u8(&index[quickbit_index__byte_offset(1, i * 16 + 16)]));
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(1, i), allo);
+
+    i++;
+  }
+
+  if ((end & 16383) != 0 && i < n) {
+    bool allo;
+
+    allo = simdle_allo_v128(simdle_load_v128_u8(&index[quickbit_index__byte_offset(0, (n - 1) * 16 + 16)]));
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(0, n - 1), allo);
+
+    allo = simdle_allo_v128(simdle_load_v128_u8(&index[quickbit_index__byte_offset(1, (n - 1) * 16 + 16)]));
+
+    quickbit__set_unchecked(index, quickbit_index__bit_offset(1, n - 1), allo);
+
+    n--;
+  }
+
+  if (i < n) {
+    quickbit_fill(
+      index,
+      QUICKBIT_INDEX_LEN,
+      value == 0,
+      quickbit_index__bit_offset(0, i),
+      quickbit_index__bit_offset(0, n)
+    );
+
+    quickbit_fill(
+      index,
+      QUICKBIT_INDEX_LEN,
+      value == 1,
+      quickbit_index__bit_offset(1, i),
+      quickbit_index__bit_offset(1, n)
+    );
+  }
+
+  return 0;
+}
+
 int64_t
 quickbit_skip_first (quickbit_index_t index, size_t len, bool value, int64_t position) {
   int64_t n = len * 8;
