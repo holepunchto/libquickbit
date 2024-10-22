@@ -29,7 +29,7 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - run: npm install -g bare-dev
-    - run: bare-dev configure --debug --platform ${{ matrix.platform }} --arch ${{ matrix.arch }}
-    - run: bare-dev build --debug
-    - run: bare-dev test --debug
+    - run: npm install -g bare-make
+    - run: bare-make generate --platform ${{ matrix.platform }} --arch ${{ matrix.arch }} --debug
+    - run: bare-make build
+    - run: bare-make test
