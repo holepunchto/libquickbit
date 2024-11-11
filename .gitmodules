@@ -1,4 +1,0 @@
-[submodule "vendor/libsimdle"]
-	path = vendor/libsimdle
-	url = ../../holepunchto/libsimdle.git
-	shallow = true

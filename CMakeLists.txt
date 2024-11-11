@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.25)
+
+find_package(cmake-fetch REQUIRED PATHS node_modules/cmake-fetch)
 
 project(quickbit C)
 
-if(NOT TARGET simdle)
-  add_subdirectory(vendor/libsimdle EXCLUDE_FROM_ALL)
-endif()
+fetch_package("github:holepunchto/libsimdle")
 
 add_library(quickbit OBJECT)
 
