@@ -10,6 +10,7 @@ list(APPEND tests
   index-fill-aligned
   index-init
   index-init-sparse
+  index-is
   index-update
   index-update-sweep
   set

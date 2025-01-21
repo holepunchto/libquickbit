@@ -47,6 +47,9 @@ void
 quickbit_index_init_sparse (quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len);
 
 bool
+quickbit_index_is (quickbit_index_t index, int64_t bit, bool value);
+
+bool
 quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t len, int64_t bit);
 
 bool

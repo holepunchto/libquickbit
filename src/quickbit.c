@@ -298,6 +298,11 @@ quickbit_index_init_sparse (quickbit_index_t index, const quickbit_chunk_t chunk
   }
 }
 
+bool
+quickbit_index_is (quickbit_index_t index, int64_t bit, bool value) {
+  return quickbit__get_unchecked(index, quickbit_index__bit_offset(value, bit / 16384));
+}
+
 static inline bool
 quickbit_index__update_propagate (quickbit_index_t index, int64_t bit, simdle_v128_t vec) {
   int64_t i = bit / 16384;
