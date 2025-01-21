@@ -300,7 +300,7 @@ quickbit_index_init_sparse (quickbit_index_t index, const quickbit_chunk_t chunk
 
 bool
 quickbit_index_is (quickbit_index_t index, int64_t bit, bool value) {
-  return quickbit__get_unchecked(index, quickbit_index__bit_offset(value, bit / 16384));
+  return quickbit__get_unchecked(index, quickbit_index__bit_offset(value, 128 + bit / 128));
 }
 
 static inline bool
