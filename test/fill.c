@@ -5,7 +5,7 @@
 #define field_len 4
 
 int
-main () {
+main() {
   uint8_t field[field_len] = {0};
 
   quickbit_fill(field, field_len, true, 4, 28);

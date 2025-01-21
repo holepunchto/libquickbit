@@ -3,7 +3,7 @@
 #include "../include/quickbit.h"
 
 int
-main () {
+main() {
   uint8_t a[32] = {0};
   a[0] = 1;
 

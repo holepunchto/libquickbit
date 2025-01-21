@@ -7,7 +7,7 @@
 #include "../include/quickbit.h"
 
 static inline bool
-quickbit__get_unchecked (const quickbit_t field, uint64_t bit) {
+quickbit__get_unchecked(const quickbit_t field, uint64_t bit) {
   uint64_t offset = bit & 7;
   uint64_t i = bit / 8;
 
@@ -15,7 +15,7 @@ quickbit__get_unchecked (const quickbit_t field, uint64_t bit) {
 }
 
 bool
-quickbit_get (const quickbit_t field, size_t len, int64_t bit) {
+quickbit_get(const quickbit_t field, size_t len, int64_t bit) {
   int64_t n = len * 8;
 
   if (bit < 0) bit += n;
@@ -25,7 +25,7 @@ quickbit_get (const quickbit_t field, size_t len, int64_t bit) {
 }
 
 static inline bool
-quickbit__set_unchecked (quickbit_t field, uint64_t bit, bool value) {
+quickbit__set_unchecked(quickbit_t field, uint64_t bit, bool value) {
   uint64_t offset = bit & 7;
   uint64_t i = bit / 8;
   uint64_t mask = 1 << offset;
@@ -46,7 +46,7 @@ quickbit__set_unchecked (quickbit_t field, uint64_t bit, bool value) {
 }
 
 bool
-quickbit_set (quickbit_t field, size_t len, int64_t bit, bool value) {
+quickbit_set(quickbit_t field, size_t len, int64_t bit, bool value) {
   int64_t n = len * 8;
 
   if (bit < 0) bit += n;
@@ -56,7 +56,7 @@ quickbit_set (quickbit_t field, size_t len, int64_t bit, bool value) {
 }
 
 void
-quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, int64_t end) {
+quickbit_fill(const quickbit_t field, size_t len, bool value, int64_t start, int64_t end) {
   int64_t n = len * 8;
 
   if (start < 0) start += n;
@@ -94,7 +94,7 @@ quickbit_fill (const quickbit_t field, size_t len, bool value, int64_t start, in
 }
 
 void
-quickbit_clear (const quickbit_t field, size_t len, const quickbit_chunk_t *chunk) {
+quickbit_clear(const quickbit_t field, size_t len, const quickbit_chunk_t *chunk) {
   if (chunk->offset >= len) return;
 
   int64_t n = len;
@@ -127,7 +127,7 @@ quickbit_clear (const quickbit_t field, size_t len, const quickbit_chunk_t *chun
 }
 
 int64_t
-quickbit_find_first (const quickbit_t field, size_t len, bool value, int64_t position) {
+quickbit_find_first(const quickbit_t field, size_t len, bool value, int64_t position) {
   int64_t n = len * 8;
 
   if (position < 0) position += n;
@@ -165,7 +165,7 @@ quickbit_find_first (const quickbit_t field, size_t len, bool value, int64_t pos
 }
 
 int64_t
-quickbit_find_last (const quickbit_t field, size_t len, bool value, int64_t position) {
+quickbit_find_last(const quickbit_t field, size_t len, bool value, int64_t position) {
   int64_t n = len * 8;
 
   if (position < 0) position += n;
@@ -203,7 +203,7 @@ quickbit_find_last (const quickbit_t field, size_t len, bool value, int64_t posi
 }
 
 static inline const quickbit_chunk_t *
-quickbit__select_chunk (const quickbit_chunk_t chunks[], size_t len, int64_t offset) {
+quickbit__select_chunk(const quickbit_chunk_t chunks[], size_t len, int64_t offset) {
   for (size_t i = 0; i < len; i++) {
     const quickbit_chunk_t *next = &chunks[i];
 
@@ -219,17 +219,17 @@ quickbit__select_chunk (const quickbit_chunk_t chunks[], size_t len, int64_t off
 }
 
 static inline int64_t
-quickbit_index__bit_offset (bool bit, int64_t offset) {
+quickbit_index__bit_offset(bool bit, int64_t offset) {
   return bit == 0 ? offset : (QUICKBIT_INDEX_LEN * 8 / 2) + offset;
 }
 
 static inline int64_t
-quickbit_index__byte_offset (bool bit, int64_t offset) {
+quickbit_index__byte_offset(bool bit, int64_t offset) {
   return bit == 0 ? offset : (QUICKBIT_INDEX_LEN / 2) + offset;
 }
 
 void
-quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t len) {
+quickbit_index_init(quickbit_index_t index, const quickbit_t field, size_t len) {
   for (int64_t i = 0; i < 128; i++) {
     for (int64_t j = 0; j < 128; j++) {
       int64_t offset = (i * 128 + j) * 16;
@@ -263,7 +263,7 @@ quickbit_index_init (quickbit_index_t index, const quickbit_t field, size_t len)
 }
 
 void
-quickbit_index_init_sparse (quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len) {
+quickbit_index_init_sparse(quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len) {
   for (int64_t i = 0; i < 128; i++) {
     for (int64_t j = 0; j < 128; j++) {
       int64_t offset = (i * 128 + j) * 16;
@@ -299,12 +299,12 @@ quickbit_index_init_sparse (quickbit_index_t index, const quickbit_chunk_t chunk
 }
 
 bool
-quickbit_index_is (quickbit_index_t index, int64_t bit, bool value) {
+quickbit_index_is(quickbit_index_t index, int64_t bit, bool value) {
   return quickbit__get_unchecked(index, quickbit_index__bit_offset(value, 128 + bit / 128));
 }
 
 static inline bool
-quickbit_index__update_propagate (quickbit_index_t index, int64_t bit, simdle_v128_t vec) {
+quickbit_index__update_propagate(quickbit_index_t index, int64_t bit, simdle_v128_t vec) {
   int64_t i = bit / 16384;
   int64_t j = bit / 128;
 
@@ -330,7 +330,7 @@ quickbit_index__update_propagate (quickbit_index_t index, int64_t bit, simdle_v1
 }
 
 bool
-quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t len, int64_t bit) {
+quickbit_index_update(quickbit_index_t index, const quickbit_t field, size_t len, int64_t bit) {
   int64_t n = len * 8;
 
   if (bit < 0) bit += n;
@@ -340,7 +340,7 @@ quickbit_index_update (quickbit_index_t index, const quickbit_t field, size_t le
 }
 
 bool
-quickbit_index_update_sparse (quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len, int64_t bit) {
+quickbit_index_update_sparse(quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len, int64_t bit) {
   if (len == 0) return false;
 
   const quickbit_chunk_t *last = &chunks[len - 1];
@@ -360,7 +360,7 @@ quickbit_index_update_sparse (quickbit_index_t index, const quickbit_chunk_t chu
 }
 
 int
-quickbit_index_fill (quickbit_index_t index, const quickbit_t field, size_t len, bool value, int64_t start, int64_t end) {
+quickbit_index_fill(quickbit_index_t index, const quickbit_t field, size_t len, bool value, int64_t start, int64_t end) {
   if (start < 0 || start >= end) return 0;
 
   int64_t i = start / 16384;
@@ -457,7 +457,7 @@ quickbit_index_fill (quickbit_index_t index, const quickbit_t field, size_t len,
 }
 
 int
-quickbit_index_fill_sparse (quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len, bool value, int64_t start, int64_t end) {
+quickbit_index_fill_sparse(quickbit_index_t index, const quickbit_chunk_t chunks[], size_t len, bool value, int64_t start, int64_t end) {
   if (start < 0 || start >= end) return 0;
 
   int64_t i = start / 16384;
@@ -576,7 +576,7 @@ quickbit_index_fill_sparse (quickbit_index_t index, const quickbit_chunk_t chunk
 }
 
 int64_t
-quickbit_skip_first (quickbit_index_t index, size_t len, bool value, int64_t position) {
+quickbit_skip_first(quickbit_index_t index, size_t len, bool value, int64_t position) {
   int64_t n = len * 8;
 
   if (position < 0) position += n;
@@ -611,7 +611,7 @@ quickbit_skip_first (quickbit_index_t index, size_t len, bool value, int64_t pos
 }
 
 int64_t
-quickbit_skip_last (quickbit_index_t index, size_t len, bool value, int64_t position) {
+quickbit_skip_last(quickbit_index_t index, size_t len, bool value, int64_t position) {
   int64_t n = len * 8;
 
   if (position < 0) position += n;

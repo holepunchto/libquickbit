@@ -5,7 +5,7 @@
 #define field_len (1 << 18)
 
 int
-main () {
+main() {
   int e;
 
   int64_t start = 16384;

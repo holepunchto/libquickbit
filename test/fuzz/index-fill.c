@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 int
-LLVMFuzzerTestOneInput (const uint8_t *data, size_t size) {
+LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
   int e;
 
   if (size != 12) return -1;

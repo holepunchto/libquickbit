@@ -5,7 +5,7 @@
 #define field_len (1 << 18)
 
 int
-main () {
+main() {
   uint8_t field[field_len] = {0};
 
   quickbit_set(field, field_len, 12800, 1);

@@ -5,7 +5,7 @@
 #define field_len 32
 
 int
-main () {
+main() {
   uint8_t field[field_len] = {0};
 
   quickbit_fill(field, field_len, true, 0, field_len * 8);
@@ -15,7 +15,7 @@ main () {
     0b00001111,
   };
 
-  quickbit_clear(field, field_len, &(quickbit_chunk_t){.field = chunk, .len = 2, .offset = 2});
+  quickbit_clear(field, field_len, &(quickbit_chunk_t) {.field = chunk, .len = 2, .offset = 2});
 
   for (size_t i = 0; i < field_len; i++) {
     switch (i) {
